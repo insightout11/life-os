@@ -1,0 +1,24 @@
+{
+  "name": "life-os",
+  "version": "1.0.0",
+  "description": "Life OS - Capture and storage layer for Telegram messages",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "bot": "npx ts-node src/index.ts bot",
+    "inbox": "npx ts-node src/index.ts inbox"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "commander": "^12.0.0",
+    "dotenv": "^16.4.0",
+    "grammy": "^1.21.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.9",
+    "@types/node": "^20.11.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.0"
+  }
+}
