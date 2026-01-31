@@ -22,8 +22,12 @@
       --purple: #8b5cf6;
       --pink: #ec4899;
       --cyan: #06b6d4;
+      --orange: #f97316;
+      --lime: #84cc16;
+      --indigo: #6366f1;
       --radius: 12px;
       --radius-lg: 16px;
+      --radius-xl: 20px;
       --shadow: 0 4px 24px rgba(0,0,0,0.4);
       --shadow-lg: 0 8px 40px rgba(0,0,0,0.6);
     }
@@ -191,6 +195,23 @@
       outline: none;
       border-color: var(--accent);
     }
+    .search-input {
+      flex: 1;
+      min-width: 150px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .search-input::placeholder {
+      color: var(--muted);
+    }
 
     /* Buttons */
     .btn {
@@ -234,6 +255,15 @@
       background: #059669;
       border-color: #059669;
     }
+    .btn-warning {
+      background: var(--warning);
+      border-color: var(--warning);
+      color: #000;
+    }
+    .btn-warning:hover {
+      background: #d97706;
+      border-color: #d97706;
+    }
     .btn-danger {
       background: rgba(239, 68, 68, 0.15);
       border-color: rgba(239, 68, 68, 0.3);
@@ -241,6 +271,13 @@
     }
     .btn-danger:hover {
       background: rgba(239, 68, 68, 0.25);
+    }
+    .btn-outline {
+      background: transparent;
+      border-color: var(--border-light);
+    }
+    .btn-outline:hover {
+      background: var(--panel);
     }
     .btn-lg {
       padding: 16px 24px;
@@ -252,6 +289,11 @@
     }
     .btn-icon {
       padding: 10px;
+    }
+    .btn-back {
+      padding: 8px 12px;
+      font-size: 14px;
+      gap: 6px;
     }
 
     /* Item List */
@@ -280,29 +322,29 @@
     .item-meta {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .item-id {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--accent);
     }
     .item-badges {
       display: flex;
-      gap: 6px;
+      gap: 4px;
       flex-wrap: wrap;
     }
     .badge {
       display: inline-flex;
       align-items: center;
-      padding: 3px 8px;
-      font-size: 10px;
+      padding: 2px 6px;
+      font-size: 9px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      border-radius: 6px;
+      border-radius: 4px;
     }
     .badge-status {
       background: rgba(107, 114, 128, 0.2);
@@ -324,19 +366,148 @@
       background: rgba(6, 182, 212, 0.15);
       color: var(--cyan);
     }
+    .badge-review {
+      background: rgba(236, 72, 153, 0.15);
+      color: var(--pink);
+    }
     .item-text {
       font-size: 14px;
-      line-height: 1.5;
+      line-height: 1.45;
       color: var(--text);
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    .item-time {
+    .item-footer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
       font-size: 11px;
       color: var(--muted);
-      margin-top: 8px;
+    }
+
+    /* Bucket Dashboard */
+    .buckets-dashboard {
+      padding: 16px;
+    }
+    .buckets-section {
+      margin-bottom: 24px;
+    }
+    .buckets-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      padding-left: 4px;
+    }
+    .buckets-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (min-width: 500px) {
+      .buckets-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .bucket-card {
+      position: relative;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      overflow: hidden;
+    }
+    .bucket-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--bucket-color, var(--accent));
+      opacity: 0.8;
+    }
+    .bucket-card:hover {
+      border-color: var(--border-light);
+      background: var(--panel-raised);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    .bucket-card:active {
+      transform: translateY(0) scale(0.98);
+    }
+    .bucket-card-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+    .bucket-card-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .bucket-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bucket-card-count {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .bucket-card-review {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      background: rgba(236, 72, 153, 0.15);
+      color: var(--pink);
+      border-radius: 4px;
+    }
+
+    /* Bucket Detail View */
+    .bucket-detail {
+      display: none;
+    }
+    .bucket-detail.active {
+      display: block;
+    }
+    .bucket-detail-header {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+    }
+    .bucket-detail-info {
+      flex: 1;
+    }
+    .bucket-detail-name {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .bucket-detail-count {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .bucket-detail-search {
+      padding: 12px 16px;
     }
 
     /* Triage Mode */
@@ -565,7 +736,7 @@
       z-index: 201;
       background: var(--panel);
       border-radius: 20px 20px 0 0;
-      max-height: 90vh;
+      max-height: 92vh;
       transform: translateY(100%);
       transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
       display: flex;
@@ -634,9 +805,9 @@
     }
     .sheet-kv {
       display: grid;
-      grid-template-columns: 100px 1fr;
-      gap: 8px 12px;
-      font-size: 14px;
+      grid-template-columns: 90px 1fr;
+      gap: 6px 12px;
+      font-size: 13px;
     }
     .sheet-kv dt {
       color: var(--muted);
@@ -690,17 +861,26 @@
     }
     .sheet-editor-row {
       display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .sheet-editor-row.inline {
+      flex-direction: row;
       align-items: center;
       gap: 12px;
     }
     .sheet-editor-label {
-      width: 80px;
-      font-size: 13px;
+      font-size: 12px;
+      font-weight: 600;
       color: var(--muted);
+    }
+    .sheet-editor-row.inline .sheet-editor-label {
+      width: 80px;
       flex-shrink: 0;
     }
     .sheet-editor-row select,
-    .sheet-editor-row input {
+    .sheet-editor-row input,
+    .sheet-editor-row textarea {
       flex: 1;
       padding: 10px 12px;
       font-size: 14px;
@@ -708,9 +888,16 @@
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: var(--radius);
+      font-family: inherit;
+    }
+    .sheet-editor-row textarea {
+      min-height: 80px;
+      resize: vertical;
+      line-height: 1.5;
     }
     .sheet-editor-row select:focus,
-    .sheet-editor-row input:focus {
+    .sheet-editor-row input:focus,
+    .sheet-editor-row textarea:focus {
       outline: none;
       border-color: var(--accent);
     }
@@ -721,6 +908,7 @@
       padding: 16px 20px;
       border-top: 1px solid var(--border);
       flex-shrink: 0;
+      background: var(--panel);
     }
     .sheet-actions-row {
       display: flex;
@@ -749,34 +937,11 @@
       color: var(--muted);
     }
 
-    /* Buckets View */
-    .buckets-container {
-      padding: 12px 16px;
-    }
-    .bucket-group {
-      margin-bottom: 16px;
-    }
-    .bucket-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      padding: 0 4px;
-    }
-    .bucket-name {
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .bucket-count {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
     /* Desktop Layout */
     @media (min-width: 768px) {
       .main {
         display: grid;
-        grid-template-columns: 400px 1fr;
+        grid-template-columns: 420px 1fr;
         gap: 0;
         padding-top: 105px;
         max-width: 1400px;
@@ -802,8 +967,12 @@
       .detail-panel .sheet-body {
         padding: 0;
       }
-      .triage-container {
+      .triage-container,
+      .buckets-dashboard {
         grid-column: 1 / -1;
+      }
+      .buckets-grid {
+        grid-template-columns: repeat(4, 1fr);
       }
     }
 
@@ -828,10 +997,10 @@
 
   <!-- Tab Bar -->
   <nav class="tab-bar">
+    <button class="tab" data-tab="buckets">Buckets</button>
     <button class="tab active" data-tab="triage">Triage<span class="count" id="countTriage">0</span></button>
     <button class="tab" data-tab="clarify">Clarify<span class="count" id="countClarify">0</span></button>
     <button class="tab" data-tab="transcribe">Transcribe<span class="count" id="countTranscribe">0</span></button>
-    <button class="tab" data-tab="content">Content Bank</button>
     <button class="tab" data-tab="all">All</button>
   </nav>
 
@@ -839,7 +1008,7 @@
   <main class="main">
     <!-- List Panel -->
     <div class="list-panel" id="listPanel">
-      <div class="controls-row" id="controlsRow">
+      <div class="controls-row hidden" id="controlsRow">
         <select class="control-select" id="statusFilter">
           <option value="">All Status</option>
           <option value="new">New</option>
@@ -847,13 +1016,26 @@
           <option value="processed">Processed</option>
           <option value="archived">Archived</option>
         </select>
-        <select class="control-select" id="viewMode">
-          <option value="inbox">List View</option>
-          <option value="buckets">Buckets</option>
-        </select>
       </div>
       <div class="item-list" id="itemList"></div>
-      <div class="buckets-container hidden" id="bucketsContainer"></div>
+    </div>
+
+    <!-- Buckets Dashboard -->
+    <div class="buckets-dashboard hidden" id="bucketsDashboard"></div>
+
+    <!-- Bucket Detail View -->
+    <div class="bucket-detail" id="bucketDetail">
+      <div class="bucket-detail-header">
+        <button class="btn btn-back" id="bucketBackBtn">← Back</button>
+        <div class="bucket-detail-info">
+          <div class="bucket-detail-name" id="bucketDetailName"></div>
+          <div class="bucket-detail-count" id="bucketDetailCount"></div>
+        </div>
+      </div>
+      <div class="bucket-detail-search">
+        <input type="text" class="search-input" id="bucketSearchInput" placeholder="Search in bucket...">
+      </div>
+      <div class="item-list" id="bucketItemList"></div>
     </div>
 
     <!-- Triage Container -->
@@ -898,13 +1080,11 @@
             </button>
           </div>
 
-          <!-- Bucket chips (shown after classification) -->
           <div class="chips-section" id="bucketChips">
             <div class="triage-actions-label">Bucket</div>
             <div class="chips" id="bucketChipsList"></div>
           </div>
 
-          <!-- Priority chips -->
           <div class="chips-section" id="priorityChips">
             <div class="triage-actions-label">Priority</div>
             <div class="chips">
@@ -914,7 +1094,6 @@
             </div>
           </div>
 
-          <!-- Persona chips (for content) -->
           <div class="chips-section" id="personaChips">
             <div class="triage-actions-label">Persona Tag</div>
             <div class="chips">
@@ -957,9 +1136,30 @@
 <script>
   const API_BASE = location.origin;
 
+  // Bucket Registry
+  const BUCKET_REGISTRY = {
+    business: [
+      { id: 'content-satire', name: 'Content Bank (Satire)', icon: '🎭', color: '#ec4899', matchTag: 'satire' },
+      { id: 'content-brand', name: 'Content Bank (Brand)', icon: '✨', color: '#8b5cf6', matchTag: 'brand' },
+      { id: 'content-teach', name: 'Content Bank (Teach)', icon: '📚', color: '#06b6d4', matchTag: 'teach' },
+      { id: 'idea-backlog', name: 'Idea Backlog', icon: '💡', color: '#f59e0b', matchBucket: 'idea backlog' },
+      { id: 'distribution', name: 'Distribution', icon: '📢', color: '#3b82f6', matchBucket: 'distribution' },
+      { id: 'product', name: 'Product', icon: '🛠', color: '#6366f1', matchBucket: 'product' },
+      { id: 'revenue', name: 'Revenue', icon: '💰', color: '#10b981', matchBucket: 'revenue' },
+    ],
+    life: [
+      { id: 'home-admin', name: 'Home + Admin', icon: '🏠', color: '#f97316', matchBucket: 'home+admin' },
+      { id: 'family-kids', name: 'Family / Kids', icon: '👨‍👩‍👧', color: '#ec4899', matchBucket: 'family' },
+      { id: 'ops', name: 'Ops', icon: '⚙️', color: '#6b7280', matchBucket: 'ops' },
+      { id: 'health', name: 'Health', icon: '💪', color: '#10b981', matchBucket: 'health' },
+    ]
+  };
+
   // State
   let allItems = [];
   let currentTab = 'triage';
+  let currentBucket = null;
+  let bucketSearchQuery = '';
   let triageQueue = [];
   let triageIndex = 0;
   let triageMode = false;
@@ -968,6 +1168,7 @@
   let selectedPriority = null;
   let selectedPersona = null;
   let selectedItemId = null;
+  let selectedItemData = null;
 
   // Auth
   function getToken() {
@@ -975,6 +1176,9 @@
   }
   function setToken(t) {
     localStorage.setItem('lifeos_token', t);
+  }
+  function getUiToken() {
+    return localStorage.getItem('lifeos_ui_token') || '';
   }
   async function apiFetch(url, opts = {}) {
     const headers = Object.assign({}, opts.headers || {});
@@ -1023,6 +1227,61 @@
     const icons = { photo: '🖼', voice: '🎤', audio: '🎵', video: '🎬', document: '📄' };
     return icons[type] || '📎';
   }
+  function fileBaseName(p) {
+    if (!p) return '';
+    const s = String(p);
+    const parts = s.split(/[/\\]/);
+    return parts[parts.length - 1] || '';
+  }
+  function attachmentUrl(att) {
+    const name = encodeURIComponent(fileBaseName(att.filePath || att.fileName || ''));
+    const t = encodeURIComponent(getUiToken());
+    return `${API_BASE}/attachments/${name}${t ? `?t=${t}` : ''}`;
+  }
+
+  // Determine which bucket an item belongs to
+  function getItemBucketId(item) {
+    const tags = item.tags || [];
+    const pipeline = (item.primaryPipeline || '').toLowerCase();
+    const bucket = (item.primaryBucket || '').toLowerCase();
+
+    // Check content bank by tag first
+    if (tags.includes('satire')) return 'content-satire';
+    if (tags.includes('brand')) return 'content-brand';
+    if (tags.includes('teach')) return 'content-teach';
+
+    // Check by bucket name
+    for (const section of Object.values(BUCKET_REGISTRY)) {
+      for (const b of section) {
+        if (b.matchBucket && bucket.includes(b.matchBucket)) return b.id;
+      }
+    }
+
+    return null;
+  }
+
+  // Check if item needs review
+  function itemNeedsReview(item) {
+    return item.status === 'new' ||
+           item.tags?.includes('clarify') ||
+           item.needsTranscription;
+  }
+
+  // Get items for a specific bucket
+  function getItemsForBucket(bucketDef) {
+    return allItems.filter(item => {
+      const tags = item.tags || [];
+      const bucket = (item.primaryBucket || '').toLowerCase();
+
+      if (bucketDef.matchTag) {
+        return tags.includes(bucketDef.matchTag);
+      }
+      if (bucketDef.matchBucket) {
+        return bucket.includes(bucketDef.matchBucket);
+      }
+      return false;
+    });
+  }
 
   // Filter items by tab
   function filterByTab(items, tab) {
@@ -1033,8 +1292,6 @@
         return items.filter(it => it.status === 'needs_clarification' || it.tags?.includes('clarify'));
       case 'transcribe':
         return items.filter(it => it.needsTranscription);
-      case 'content':
-        return items.filter(it => it.primaryBucket?.toLowerCase() === 'content bank' || it.primaryBucket?.toLowerCase() === 'content');
       case 'all':
       default:
         return items;
@@ -1048,16 +1305,15 @@
     document.getElementById('countTranscribe').textContent = filterByTab(allItems, 'transcribe').length;
   }
 
-  // Render item card
+  // Render item card (compact version)
   function renderItemCard(it) {
     const text = it.rawText || it.transcript || '(no text)';
-    const preview = text.length > 150 ? text.slice(0, 150) + '…' : text;
+    const preview = text.length > 100 ? text.slice(0, 100) + '…' : text;
     let badges = '';
     if (it.status === 'new') badges += '<span class="badge badge-new">New</span>';
-    else badges += `<span class="badge badge-status">${escapeHtml(it.status)}</span>`;
     if (it.prefix) badges += `<span class="badge badge-prefix">${escapeHtml(it.prefix)}</span>`;
-    if (it.needsTranscription) badges += '<span class="badge badge-transcribe">Transcribe</span>';
-    if (it.attachments?.length) badges += `<span class="badge badge-attachment">${it.attachments.length} file${it.attachments.length > 1 ? 's' : ''}</span>`;
+    if (it.needsTranscription) badges += '<span class="badge badge-transcribe">TX</span>';
+    if (it.attachments?.length) badges += `<span class="badge badge-attachment">${it.attachments.length}</span>`;
     return `
       <div class="item-card" data-id="${it.id}">
         <div class="item-content">
@@ -1066,65 +1322,109 @@
             <div class="item-badges">${badges}</div>
           </div>
           <div class="item-text">${escapeHtml(preview)}</div>
-          <div class="item-time">${formatTime(it.createdAt)}</div>
+          <div class="item-footer">${formatTime(it.createdAt)}</div>
         </div>
       </div>
     `;
   }
 
+  // Render bucket dashboard
+  function renderBucketsDashboard() {
+    const dashboard = document.getElementById('bucketsDashboard');
+    let html = '';
+
+    for (const [sectionKey, buckets] of Object.entries(BUCKET_REGISTRY)) {
+      const sectionName = sectionKey === 'business' ? 'Business' : 'Life';
+      html += `<div class="buckets-section"><div class="buckets-section-title">${sectionName}</div><div class="buckets-grid">`;
+
+      for (const bucket of buckets) {
+        const items = getItemsForBucket(bucket);
+        const count = items.length;
+        const needsReview = items.some(itemNeedsReview);
+
+        html += `
+          <div class="bucket-card" data-bucket-id="${bucket.id}" style="--bucket-color: ${bucket.color}">
+            <div class="bucket-card-icon">${bucket.icon}</div>
+            <div class="bucket-card-name">${escapeHtml(bucket.name)}</div>
+            <div class="bucket-card-meta">
+              <span class="bucket-card-count">${count} item${count !== 1 ? 's' : ''}</span>
+              ${needsReview ? '<span class="bucket-card-review">Review</span>' : ''}
+            </div>
+          </div>
+        `;
+      }
+
+      html += '</div></div>';
+    }
+
+    dashboard.innerHTML = html;
+  }
+
+  // Open bucket detail view
+  function openBucketDetail(bucketId) {
+    let bucketDef = null;
+    for (const section of Object.values(BUCKET_REGISTRY)) {
+      bucketDef = section.find(b => b.id === bucketId);
+      if (bucketDef) break;
+    }
+    if (!bucketDef) return;
+
+    currentBucket = bucketDef;
+    bucketSearchQuery = '';
+    document.getElementById('bucketSearchInput').value = '';
+
+    document.getElementById('bucketDetailName').textContent = bucketDef.name;
+    renderBucketItems();
+
+    document.getElementById('bucketsDashboard').classList.add('hidden');
+    document.getElementById('bucketDetail').classList.add('active');
+  }
+
+  // Close bucket detail view
+  function closeBucketDetail() {
+    currentBucket = null;
+    document.getElementById('bucketDetail').classList.remove('active');
+    document.getElementById('bucketsDashboard').classList.remove('hidden');
+  }
+
+  // Render bucket items
+  function renderBucketItems() {
+    if (!currentBucket) return;
+
+    let items = getItemsForBucket(currentBucket);
+
+    // Apply search filter
+    if (bucketSearchQuery) {
+      const q = bucketSearchQuery.toLowerCase();
+      items = items.filter(it => {
+        const text = (it.rawText || it.transcript || '').toLowerCase();
+        return text.includes(q);
+      });
+    }
+
+    document.getElementById('bucketDetailCount').textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
+
+    const listEl = document.getElementById('bucketItemList');
+    if (items.length === 0) {
+      listEl.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p class="empty-state-text">No items in this bucket</p></div>';
+    } else {
+      listEl.innerHTML = items.map(renderItemCard).join('');
+    }
+  }
+
   // Render list
   function renderList() {
     const statusFilter = document.getElementById('statusFilter').value;
-    const viewMode = document.getElementById('viewMode').value;
     const listEl = document.getElementById('itemList');
-    const bucketsEl = document.getElementById('bucketsContainer');
 
     let items = filterByTab(allItems, currentTab);
     if (statusFilter) items = items.filter(it => it.status === statusFilter);
 
-    if (viewMode === 'buckets') {
-      listEl.classList.add('hidden');
-      bucketsEl.classList.remove('hidden');
-      renderBuckets(items);
+    if (items.length === 0) {
+      listEl.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p class="empty-state-text">No items found</p></div>';
     } else {
-      listEl.classList.remove('hidden');
-      bucketsEl.classList.add('hidden');
-      if (items.length === 0) {
-        listEl.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p class="empty-state-text">No items found</p></div>';
-      } else {
-        listEl.innerHTML = items.map(renderItemCard).join('');
-      }
+      listEl.innerHTML = items.map(renderItemCard).join('');
     }
-  }
-
-  // Render buckets
-  function renderBuckets(items) {
-    const bucketsEl = document.getElementById('bucketsContainer');
-    const groups = new Map();
-    for (const it of items) {
-      const p = (it.primaryPipeline || 'untriaged').toLowerCase();
-      const b = (it.primaryBucket || 'inbox').toLowerCase();
-      const key = `${p} / ${b}`;
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(it);
-    }
-    const keys = Array.from(groups.keys()).sort();
-    if (keys.length === 0) {
-      bucketsEl.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p class="empty-state-text">No items found</p></div>';
-      return;
-    }
-    bucketsEl.innerHTML = keys.map(k => {
-      const arr = groups.get(k);
-      return `
-        <div class="bucket-group">
-          <div class="bucket-header">
-            <span class="bucket-name">${escapeHtml(k)}</span>
-            <span class="bucket-count">${arr.length}</span>
-          </div>
-          <div class="item-list">${arr.map(renderItemCard).join('')}</div>
-        </div>
-      `;
-    }).join('');
   }
 
   // Load items from API
@@ -1135,7 +1435,9 @@
       allItems = j.items || [];
       updateTabCounts();
       renderList();
+      renderBucketsDashboard();
       updateTriageQueue();
+      if (currentBucket) renderBucketItems();
     } catch (e) {
       console.error('Failed to load items:', e);
     }
@@ -1153,23 +1455,6 @@
     }
   }
 
-  function getUiToken(){
-    return localStorage.getItem('lifeos_ui_token') || '';
-  }
-
-  function fileBaseName(p){
-    if(!p) return '';
-    const s = String(p);
-    const parts = s.split(/[/\\]/);
-    return parts[parts.length-1] || '';
-  }
-
-  function attachmentUrl(att){
-    const name = encodeURIComponent(fileBaseName(att.filePath || att.fileName || ''));
-    const t = encodeURIComponent(getUiToken());
-    return `${API_BASE}/attachments/${name}${t ? `?t=${t}` : ''}`;
-  }
-
   // Update item via API
   async function updateItem(id, data) {
     try {
@@ -1179,7 +1464,6 @@
         body: JSON.stringify(data)
       });
       if (!r.ok) {
-        // TODO: Backend may not support PATCH yet - log for debugging
         console.warn('PATCH failed, status:', r.status);
         return false;
       }
@@ -1195,6 +1479,7 @@
     selectedItemId = id;
     const item = await loadItem(id);
     if (!item) return;
+    selectedItemData = item;
 
     const content = renderDetailContent(item);
     const actions = renderDetailActions(item);
@@ -1222,7 +1507,7 @@
             ${item.attachments.map(a => {
               const url = attachmentUrl(a);
               const name = escapeHtml(a.fileName || fileBaseName(a.filePath) || a.type);
-              const meta = `${escapeHtml(a.mimeType || '')}${a.fileSize ? ` · ${Math.round(a.fileSize/1024)} KB` : ''}`;
+              const meta = `${escapeHtml(a.mimeType || '')}${a.fileSize ? ` · ${Math.round(a.fileSize / 1024)} KB` : ''}`;
               const preview = a.type === 'photo' ? `<img src="${url}" alt="${name}" style="width:100%;border-radius:12px;border:1px solid var(--border);margin-top:10px" />`
                 : (a.type === 'voice' || a.type === 'audio') ? `<audio controls src="${url}" style="width:100%;margin-top:10px"></audio>`
                 : (a.type === 'video') ? `<video controls src="${url}" style="width:100%;margin-top:10px;border-radius:12px;border:1px solid var(--border)"></video>`
@@ -1265,35 +1550,43 @@
       <div class="sheet-section">
         <div class="sheet-label">Edit</div>
         <div class="sheet-editor">
-          <div class="sheet-editor-row">
+          <div class="sheet-editor-row inline">
             <span class="sheet-editor-label">Status</span>
-            <select id="editStatus" data-field="status">
+            <select id="editStatus">
               <option value="new" ${item.status === 'new' ? 'selected' : ''}>New</option>
               <option value="triaged" ${item.status === 'triaged' ? 'selected' : ''}>Triaged</option>
               <option value="processed" ${item.status === 'processed' ? 'selected' : ''}>Processed</option>
               <option value="archived" ${item.status === 'archived' ? 'selected' : ''}>Archived</option>
             </select>
           </div>
-          <div class="sheet-editor-row">
+          <div class="sheet-editor-row inline">
             <span class="sheet-editor-label">Pipeline</span>
-            <select id="editPipeline" data-field="primaryPipeline">
+            <select id="editPipeline">
               <option value="">-</option>
               <option value="life" ${item.primaryPipeline === 'life' ? 'selected' : ''}>Life</option>
               <option value="business" ${item.primaryPipeline === 'business' ? 'selected' : ''}>Business</option>
             </select>
           </div>
-          <div class="sheet-editor-row">
+          <div class="sheet-editor-row inline">
             <span class="sheet-editor-label">Bucket</span>
-            <input type="text" id="editBucket" data-field="primaryBucket" value="${escapeHtml(item.primaryBucket || '')}" placeholder="e.g. Ops, Content Bank">
+            <input type="text" id="editBucket" value="${escapeHtml(item.primaryBucket || '')}" placeholder="e.g. Ops, Content Bank">
           </div>
-          <div class="sheet-editor-row">
+          <div class="sheet-editor-row inline">
             <span class="sheet-editor-label">Priority</span>
-            <select id="editPriority" data-field="priority">
+            <select id="editPriority">
               <option value="">-</option>
               <option value="P1" ${item.priority === 'P1' ? 'selected' : ''}>P1 - Urgent</option>
               <option value="P2" ${item.priority === 'P2' ? 'selected' : ''}>P2 - Soon</option>
               <option value="P3" ${item.priority === 'P3' ? 'selected' : ''}>P3 - Later</option>
             </select>
+          </div>
+          <div class="sheet-editor-row">
+            <span class="sheet-editor-label">Next Action</span>
+            <input type="text" id="editNextAction" value="${escapeHtml(item.nextAction || '')}" placeholder="What's the next step?">
+          </div>
+          <div class="sheet-editor-row">
+            <span class="sheet-editor-label">Notes</span>
+            <textarea id="editNotes" placeholder="Add notes, context, or reminders...">${escapeHtml(item.why || '')}</textarea>
           </div>
         </div>
       </div>
@@ -1303,11 +1596,14 @@
   function renderDetailActions(item) {
     return `
       <div class="sheet-actions-row">
-        <button class="btn btn-primary" onclick="saveItemEdits()">Save Changes</button>
+        <button class="btn btn-primary" onclick="saveItemEdits()">Save</button>
+        <button class="btn btn-warning" onclick="saveAndReview()">
+          <span>🔄</span> Save & Review
+        </button>
       </div>
       <div class="sheet-actions-row">
-        <button class="btn" onclick="markNeedsClarification()">Needs Clarification</button>
-        <button class="btn" onclick="markNeedsTranscription()">Needs Transcription</button>
+        <button class="btn btn-outline" onclick="markNeedsClarification()">Needs Clarification</button>
+        <button class="btn btn-outline" onclick="markNeedsTranscription()">Needs Transcription</button>
       </div>
       <div class="sheet-actions-row">
         <button class="btn btn-danger" onclick="archiveItem()">Archive</button>
@@ -1316,17 +1612,37 @@
   }
 
   // Sheet actions
-  async function saveItemEdits() {
-    if (!selectedItemId) return;
+  function gatherEditData() {
     const data = {};
     const statusEl = document.getElementById('editStatus');
     const pipelineEl = document.getElementById('editPipeline');
     const bucketEl = document.getElementById('editBucket');
     const priorityEl = document.getElementById('editPriority');
+    const nextActionEl = document.getElementById('editNextAction');
+    const notesEl = document.getElementById('editNotes');
+
     if (statusEl) data.status = statusEl.value;
     if (pipelineEl) data.primaryPipeline = pipelineEl.value || null;
     if (bucketEl) data.primaryBucket = bucketEl.value || null;
     if (priorityEl) data.priority = priorityEl.value || null;
+    if (nextActionEl) data.nextAction = nextActionEl.value || null;
+    if (notesEl) data.why = notesEl.value || null;
+
+    return data;
+  }
+
+  async function saveItemEdits() {
+    if (!selectedItemId) return;
+    const data = gatherEditData();
+    await updateItem(selectedItemId, data);
+    closeSheet();
+    await loadItems();
+  }
+
+  async function saveAndReview() {
+    if (!selectedItemId) return;
+    const data = gatherEditData();
+    data.status = 'new'; // Set to new so it appears in triage again
     await updateItem(selectedItemId, data);
     closeSheet();
     await loadItems();
@@ -1360,6 +1676,7 @@
     document.getElementById('sheetOverlay').classList.remove('open');
     document.getElementById('sheet').classList.remove('open');
     selectedItemId = null;
+    selectedItemData = null;
   }
 
   // Triage mode
@@ -1399,17 +1716,14 @@
     document.getElementById('triageProgressFill').style.width = `${progress}%`;
     document.getElementById('triageProgressText').textContent = `${triageIndex + 1} / ${triageQueue.length}`;
 
-    // Meta badges
     let badges = `<span class="badge badge-new">New</span>`;
     if (item.prefix) badges += `<span class="badge badge-prefix">${escapeHtml(item.prefix)}</span>`;
     if (item.attachments?.length) badges += `<span class="badge badge-attachment">${item.attachments.length} file${item.attachments.length > 1 ? 's' : ''}</span>`;
     document.getElementById('triageCardMeta').innerHTML = `<span class="item-id">#${item.id}</span>${badges}`;
 
-    // Text
     const text = item.rawText || item.transcript || '(no text)';
     document.getElementById('triageCardText').textContent = text;
 
-    // Attachments
     const attEl = document.getElementById('triageCardAttachments');
     if (item.attachments?.length) {
       attEl.innerHTML = item.attachments.map(a => `
@@ -1443,13 +1757,11 @@
       b.classList.toggle('selected', b.dataset.classify === cls);
     });
 
-    // Show relevant chips
     const bucketChips = document.getElementById('bucketChips');
     const priorityChips = document.getElementById('priorityChips');
     const personaChips = document.getElementById('personaChips');
     const bucketList = document.getElementById('bucketChipsList');
 
-    // Reset
     bucketChips.classList.remove('show');
     priorityChips.classList.remove('show');
     personaChips.classList.remove('show');
@@ -1462,8 +1774,8 @@
       bucketList.innerHTML = `
         <button class="chip" data-bucket="Ops">Ops</button>
         <button class="chip" data-bucket="Health">Health</button>
-        <button class="chip" data-bucket="Finance">Finance</button>
-        <button class="chip" data-bucket="Social">Social</button>
+        <button class="chip" data-bucket="Home+Admin">Home+Admin</button>
+        <button class="chip" data-bucket="Family">Family</button>
       `;
       bucketChips.classList.add('show');
       priorityChips.classList.add('show');
@@ -1472,15 +1784,13 @@
         <button class="chip" data-bucket="Product">Product</button>
         <button class="chip" data-bucket="Revenue">Revenue</button>
         <button class="chip" data-bucket="Distribution">Distribution</button>
-        <button class="chip" data-bucket="Admin">Admin</button>
+        <button class="chip" data-bucket="Idea Backlog">Idea Backlog</button>
       `;
       bucketChips.classList.add('show');
       priorityChips.classList.add('show');
     } else if (cls === 'content') {
       personaChips.classList.add('show');
       selectedBucket = 'Content Bank';
-    } else if (cls === 'trash') {
-      // No extra options for trash
     }
 
     document.getElementById('triageSaveRow').classList.add('show');
@@ -1519,7 +1829,6 @@
 
     await updateItem(item.id, data);
 
-    // Update local state
     const idx = allItems.findIndex(it => it.id === item.id);
     if (idx !== -1) {
       allItems[idx] = { ...allItems[idx], ...data };
@@ -1544,44 +1853,65 @@
     const triageContainer = document.getElementById('triageContainer');
     const listPanel = document.getElementById('listPanel');
     const controlsRow = document.getElementById('controlsRow');
+    const bucketsDashboard = document.getElementById('bucketsDashboard');
+    const bucketDetail = document.getElementById('bucketDetail');
+    const detailPanel = document.getElementById('detailPanel');
 
-    if (tab === 'triage') {
+    // Hide all views first
+    triageContainer.classList.remove('active');
+    listPanel.classList.add('hidden');
+    bucketsDashboard.classList.add('hidden');
+    bucketDetail.classList.remove('active');
+    controlsRow.classList.add('hidden');
+
+    if (tab === 'buckets') {
+      bucketsDashboard.classList.remove('hidden');
+      if (currentBucket) {
+        bucketDetail.classList.add('active');
+        bucketsDashboard.classList.add('hidden');
+      }
+    } else if (tab === 'triage') {
       triageContainer.classList.add('active');
-      listPanel.classList.add('hidden');
       updateTriageQueue();
       if (!triageMode) {
         document.getElementById('triageStart').style.display = 'flex';
         document.getElementById('triageActive').classList.remove('show');
       }
     } else {
-      triageContainer.classList.remove('active');
       listPanel.classList.remove('hidden');
       if (triageMode) exitTriageMode();
+      if (tab === 'all') {
+        controlsRow.classList.remove('hidden');
+      }
+      renderList();
     }
-
-    // Show/hide status filter based on tab
-    if (tab === 'all') {
-      controlsRow.classList.remove('hidden');
-    } else {
-      controlsRow.classList.add('hidden');
-    }
-
-    renderList();
   }
 
   // Event listeners
   document.getElementById('refreshBtn').addEventListener('click', loadItems);
   document.getElementById('statusFilter').addEventListener('change', renderList);
-  document.getElementById('viewMode').addEventListener('change', renderList);
   document.getElementById('startTriageBtn').addEventListener('click', startTriageMode);
   document.getElementById('exitTriageBtn').addEventListener('click', exitTriageMode);
   document.getElementById('saveNextBtn').addEventListener('click', saveAndNext);
   document.getElementById('sheetOverlay').addEventListener('click', closeSheet);
   document.getElementById('sheetClose').addEventListener('click', closeSheet);
+  document.getElementById('bucketBackBtn').addEventListener('click', closeBucketDetail);
+  document.getElementById('bucketSearchInput').addEventListener('input', (e) => {
+    bucketSearchQuery = e.target.value;
+    renderBucketItems();
+  });
 
   // Tab clicks
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+  });
+
+  // Bucket card clicks
+  document.getElementById('bucketsDashboard').addEventListener('click', (e) => {
+    const card = e.target.closest('.bucket-card');
+    if (!card) return;
+    const bucketId = card.dataset.bucketId;
+    if (bucketId) openBucketDetail(bucketId);
   });
 
   // Triage classification buttons
