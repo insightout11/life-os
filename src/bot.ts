@@ -69,8 +69,21 @@ async function downloadFile(fileId: string, fileName: string): Promise<string> {
   });
 }
 
+const allowFrom = (process.env.TELEGRAM_ALLOW_FROM || '')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+
 // Handle all messages
 bot.on('message', async (ctx: Context) => {
+  const fromId = ctx.from?.id;
+  if (allowFrom.length > 0) {
+    if (!fromId || !allowFrom.includes(String(fromId))) {
+      // Ignore unauthorized senders (but reply politely)
+      try { await ctx.reply('Not authorized.'); } catch {}
+      return;
+    }
+  }
   const message = ctx.message as Message;
 
   try {
@@ -162,7 +175,7 @@ bot.on('message', async (ctx: Context) => {
     };
 
     const item = createInboxItem(input);
-    console.log(`Saved inbox item #${item.id}${prefix ? ` [${prefix}]` : ''}`);
+    console.log(`Saved inbox item #${item.id}${prefix ? ` [${prefix}]` : ''} from=${fromId ?? 'unknown'}`);
 
     // Always reply "Saved."
     await ctx.reply('Saved.');

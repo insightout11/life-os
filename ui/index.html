@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Life OS</title>
+  <style>
+    :root{--bg:#0b1220;--panel:#121a2b;--muted:#9aa4b2;--text:#e8eef7;--accent:#5aa7ff;--border:#22304a;}
+    *{box-sizing:border-box;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;}
+    body{margin:0;background:linear-gradient(180deg,#071022,#0b1220);color:var(--text);}
+    header{position:sticky;top:0;background:rgba(7,16,34,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between;}
+    h1{margin:0;font-size:16px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted)}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .pill{background:rgba(90,167,255,0.12);border:1px solid rgba(90,167,255,0.25);color:var(--accent);padding:6px 10px;border-radius:999px;font-size:12px}
+    .wrap{display:grid;grid-template-columns: 420px 1fr;gap:12px;padding:12px;max-width:1200px;margin:0 auto;}
+    @media (max-width: 900px){.wrap{grid-template-columns:1fr;}}
+    .card{background:rgba(18,26,43,0.9);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+    .card h2{margin:0;padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em}
+    .controls{padding:10px 12px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+    select,input,button{background:#0e1728;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:8px 10px;font-size:13px;}
+    button{cursor:pointer}
+    button.primary{border-color:rgba(90,167,255,0.45);background:rgba(90,167,255,0.12)}
+    .list{max-height: calc(100vh - 170px); overflow:auto;}
+    .item{padding:12px 14px;border-bottom:1px solid rgba(34,48,74,0.7);cursor:pointer}
+    .item:hover{background:rgba(255,255,255,0.03)}
+    .meta{font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+    .text{margin-top:6px;font-size:13px;line-height:1.35}
+    .detail{padding:14px}
+    .detail pre{white-space:pre-wrap;word-break:break-word;background:#0e1728;border:1px solid var(--border);padding:10px;border-radius:12px}
+    .kv{display:grid;grid-template-columns:120px 1fr;gap:8px;font-size:13px;margin:8px 0;color:var(--muted)}
+    .kv b{color:var(--text);font-weight:600}
+    .tag{display:inline-flex;gap:6px;align-items:center;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:4px 8px;border-radius:999px;font-size:12px;color:var(--muted)}
+    .ok{color:#6ee7b7}
+    .warn{color:#fbbf24}
+    .err{color:#f87171}
+    .small{font-size:12px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="row">
+      <h1>Life OS</h1>
+      <span id="status" class="pill">connecting…</span>
+    </div>
+    <div class="row small">API: <span id="apiBase"></span></div>
+  </header>
+
+  <div class="wrap">
+    <div class="card">
+      <h2>Inbox</h2>
+      <div class="controls">
+        <select id="viewMode">
+          <option value="inbox" selected>inbox</option>
+          <option value="buckets">buckets</option>
+        </select>
+        <select id="statusFilter">
+          <option value="">all</option>
+          <option value="new" selected>new</option>
+          <option value="triaged">triaged</option>
+          <option value="processed">processed</option>
+          <option value="archived">archived</option>
+        </select>
+        <select id="prefixFilter">
+          <option value="">any prefix</option>
+          <option value="NOW">NOW</option>
+          <option value="URGENT">URGENT</option>
+          <option value="SORT_NOW">SORT_NOW</option>
+        </select>
+        <button class="primary" id="refreshBtn">Refresh</button>
+      </div>
+      <div class="list" id="list"></div>
+      <div class="list" id="buckets" style="display:none;padding:12px"></div>
+    </div>
+
+    <div class="card">
+      <h2>Item</h2>
+      <div class="detail" id="detail">
+        <div class="small">Select an item from the left.</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const API_BASE = location.origin;
+  document.getElementById('apiBase').textContent = API_BASE;
+
+  // Simple auth token for API calls (stored locally in the browser)
+  function getToken(){
+    return localStorage.getItem('lifeos_token') || '';
+  }
+  function setToken(t){
+    localStorage.setItem('lifeos_token', t);
+  }
+  async function apiFetch(url, opts={}){
+    const headers = Object.assign({}, opts.headers || {});
+    const tok = getToken();
+    if(tok) headers['Authorization'] = `Bearer ${tok}`;
+    const res = await fetch(url, Object.assign({}, opts, { headers }));
+    if(res.status === 401){
+      const t = prompt('Life‑OS token required. Paste LIFEOS_UI_TOKEN:');
+      if(t){ setToken(t.trim()); return apiFetch(url, opts); }
+    }
+    return res;
+  }
+
+  async function health(){
+    try{
+      const r = await fetch(`${API_BASE}/health`);
+      const j = await r.json();
+      document.getElementById('status').textContent = j.ok ? 'online' : 'offline';
+      document.getElementById('status').className = 'pill ' + (j.ok ? 'ok' : 'err');
+    }catch(e){
+      document.getElementById('status').textContent = 'offline';
+      document.getElementById('status').className = 'pill err';
+    }
+  }
+
+  function escapeHtml(s){
+    return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function fmtItemRow(it){
+    const hasAtt = it.attachments?.length ? ` · ${it.attachments.length} att` : '';
+    const needsT = it.needsTranscription ? ' · needs transcription' : '';
+    const prefix = it.prefix ? ` · ${it.prefix}` : '';
+    const text = it.rawText || it.transcript || '(no text)';
+    const preview = text.length > 120 ? text.slice(0,120)+'…' : text;
+    return `
+      <div class="item" data-id="${it.id}">
+        <div class="meta">#${it.id} · ${escapeHtml(it.status)}${escapeHtml(prefix)}${escapeHtml(hasAtt)}${escapeHtml(needsT)} · ${escapeHtml(it.createdAt)}</div>
+        <div class="text">${escapeHtml(preview)}</div>
+      </div>
+    `;
+  }
+
+  async function loadList(){
+    const status = document.getElementById('statusFilter').value;
+    const prefix = document.getElementById('prefixFilter').value;
+    const qs = new URLSearchParams();
+    if(status) qs.set('status', status);
+    if(prefix) qs.set('prefix', prefix);
+    qs.set('limit','200');
+
+    const r = await apiFetch(`${API_BASE}/api/inbox?${qs.toString()}`);
+    const j = await r.json();
+    const el = document.getElementById('list');
+    el.innerHTML = (j.items||[]).map(fmtItemRow).join('') || `<div class="item"><div class="small">No items.</div></div>`;
+    return (j.items||[]);
+  }
+
+  function bucketKey(it){
+    const p = (it.primaryPipeline || 'untriaged').toLowerCase();
+    const b = (it.primaryBucket || 'inbox').toLowerCase();
+    return `${p} / ${b}`;
+  }
+
+  function renderBuckets(items){
+    const box = document.getElementById('buckets');
+    const groups = new Map();
+    for(const it of items){
+      const k = bucketKey(it);
+      if(!groups.has(k)) groups.set(k, []);
+      groups.get(k).push(it);
+    }
+    const keys = Array.from(groups.keys()).sort();
+    if(keys.length===0){
+      box.innerHTML = `<div class="small">No items.</div>`;
+      return;
+    }
+    box.innerHTML = keys.map(k=>{
+      const arr = groups.get(k);
+      return `
+        <div style="margin-bottom:14px">
+          <div class="meta" style="margin-bottom:6px"><b style="color:var(--text)">${escapeHtml(k)}</b> · ${arr.length}</div>
+          <div style="border:1px solid rgba(34,48,74,0.7); border-radius:12px; overflow:hidden">
+            ${arr.map(fmtItemRow).join('')}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function loadItem(id){
+    const r = await apiFetch(`${API_BASE}/api/inbox/${id}`);
+    const j = await r.json();
+    const it = j.item;
+    const attHtml = (it.attachments||[]).map(a => `<div class="tag">${escapeHtml(a.type)} · ${escapeHtml(a.mimeType||'')} · ${escapeHtml((a.fileSize||0)+'b')}</div>`).join(' ');
+    document.getElementById('detail').innerHTML = `
+      <div class="kv"><div>id</div><b>#${it.id}</b></div>
+      <div class="kv"><div>status</div><b>${escapeHtml(it.status)}</b></div>
+      <div class="kv"><div>prefix</div><b>${escapeHtml(it.prefix||'')}</b></div>
+      <div class="kv"><div>created</div><b>${escapeHtml(it.createdAt)}</b></div>
+      <div class="kv"><div>needs tx</div><b>${it.needsTranscription ? 'yes' : 'no'}</b></div>
+      <div style="margin:10px 0">${attHtml || '<span class="small">No attachments</span>'}</div>
+      <div class="small">Text</div>
+      <pre>${escapeHtml(it.rawText || '')}</pre>
+      <div class="small">Transcript</div>
+      <pre>${escapeHtml(it.transcript || '')}</pre>
+    `;
+  }
+
+  async function refreshAll(){
+    const items = await loadList();
+    const mode = document.getElementById('viewMode').value;
+    const listEl = document.getElementById('list');
+    const bucketsEl = document.getElementById('buckets');
+    if(mode === 'buckets'){
+      listEl.style.display = 'none';
+      bucketsEl.style.display = 'block';
+      renderBuckets(items);
+    } else {
+      listEl.style.display = 'block';
+      bucketsEl.style.display = 'none';
+    }
+  }
+
+  document.getElementById('refreshBtn').addEventListener('click', async () => { await refreshAll(); });
+  document.getElementById('statusFilter').addEventListener('change', refreshAll);
+  document.getElementById('prefixFilter').addEventListener('change', refreshAll);
+  document.getElementById('viewMode').addEventListener('change', refreshAll);
+
+  document.getElementById('list').addEventListener('click', (e)=>{
+    const item = e.target.closest('.item');
+    if(!item) return;
+    const id = item.getAttribute('data-id');
+    if(id) loadItem(id);
+  });
+  document.getElementById('buckets').addEventListener('click', (e)=>{
+    const item = e.target.closest('.item');
+    if(!item) return;
+    const id = item.getAttribute('data-id');
+    if(id) loadItem(id);
+  });
+
+  (async ()=>{
+    await health();
+    await refreshAll();
+    setInterval(health, 15000);
+  })();
+</script>
+</body>
+</html>

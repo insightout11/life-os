@@ -1,3 +1,5 @@
+logs/
+.env
 # Dependencies
 node_modules/
 

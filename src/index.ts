@@ -7,6 +7,12 @@ if (command === 'bot') {
   // Start Telegram bot
   const { startBot } = require('./bot');
   startBot();
+} else if (command === 'ui') {
+  // Start UI API server
+  require('./server');
+} else if (command === 'transcribe') {
+  // Run transcription worker
+  require('./transcribe').runTranscribe();
 } else if (command === 'inbox' || !command) {
   // Run CLI
   const { program } = require('./cli');
