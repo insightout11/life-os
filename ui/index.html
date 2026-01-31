@@ -1153,6 +1153,23 @@
     }
   }
 
+  function getUiToken(){
+    return localStorage.getItem('lifeos_ui_token') || '';
+  }
+
+  function fileBaseName(p){
+    if(!p) return '';
+    const s = String(p);
+    const parts = s.split(/[/\\]/);
+    return parts[parts.length-1] || '';
+  }
+
+  function attachmentUrl(att){
+    const name = encodeURIComponent(fileBaseName(att.filePath || att.fileName || ''));
+    const t = encodeURIComponent(getUiToken());
+    return `${API_BASE}/attachments/${name}${t ? `?t=${t}` : ''}`;
+  }
+
   // Update item via API
   async function updateItem(id, data) {
     try {
@@ -1202,15 +1219,25 @@
         <div class="sheet-section">
           <div class="sheet-label">Attachments</div>
           <div class="sheet-attachments">
-            ${item.attachments.map(a => `
-              <div class="sheet-attachment">
-                <div class="sheet-attachment-icon">${getAttachmentIcon(a.type)}</div>
-                <div class="sheet-attachment-info">
-                  <div class="sheet-attachment-name">${escapeHtml(a.fileName || a.type)}</div>
-                  <div class="sheet-attachment-meta">${escapeHtml(a.mimeType || '')} · ${a.fileSize ? Math.round(a.fileSize / 1024) + ' KB' : ''}</div>
+            ${item.attachments.map(a => {
+              const url = attachmentUrl(a);
+              const name = escapeHtml(a.fileName || fileBaseName(a.filePath) || a.type);
+              const meta = `${escapeHtml(a.mimeType || '')}${a.fileSize ? ` · ${Math.round(a.fileSize/1024)} KB` : ''}`;
+              const preview = a.type === 'photo' ? `<img src="${url}" alt="${name}" style="width:100%;border-radius:12px;border:1px solid var(--border);margin-top:10px" />`
+                : (a.type === 'voice' || a.type === 'audio') ? `<audio controls src="${url}" style="width:100%;margin-top:10px"></audio>`
+                : (a.type === 'video') ? `<video controls src="${url}" style="width:100%;margin-top:10px;border-radius:12px;border:1px solid var(--border)"></video>`
+                : '';
+              return `
+                <div class="sheet-attachment">
+                  <div class="sheet-attachment-icon">${getAttachmentIcon(a.type)}</div>
+                  <div class="sheet-attachment-info">
+                    <div class="sheet-attachment-name"><a href="${url}" target="_blank" rel="noopener noreferrer" style="color:var(--text)">${name}</a></div>
+                    <div class="sheet-attachment-meta">${meta}</div>
+                    ${preview}
+                  </div>
                 </div>
-              </div>
-            `).join('')}
+              `;
+            }).join('')}
           </div>
         </div>
       `;

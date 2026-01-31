@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { listInboxItems, getInboxItemById, updateInboxItem, triageInboxItem } from './db/inbox';
+import { ATTACHMENTS_DIR } from './db';
 
 const app = express();
 app.use(cors());
@@ -23,6 +24,34 @@ const uiDir = path.join(process.cwd(), 'ui');
 app.use('/', express.static(uiDir, { index: 'index.html' }));
 
 app.get('/health', (_req, res) => res.json({ ok: true }));
+
+// Attachments (serve local files saved from Telegram)
+// Note: <img>/<audio> tags can't send Authorization headers, so we allow token via query param `t`.
+function requireTokenForAsset(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const UI_TOKEN = process.env.LIFEOS_UI_TOKEN;
+  if (!UI_TOKEN) return next();
+  const header = req.header('authorization') || '';
+  const headerToken = header.startsWith('Bearer ') ? header.slice('Bearer '.length) : header;
+  const queryToken = typeof req.query.t === 'string' ? req.query.t : '';
+  const token = headerToken || queryToken;
+  if (token && token === UI_TOKEN) return next();
+  res.status(401).send('Unauthorized');
+}
+
+app.get('/attachments/:name', requireTokenForAsset, (req, res) => {
+  const name = String(req.params.name || '');
+  // prevent path traversal
+  if (name.includes('..') || name.includes('/') || name.includes('\\')) {
+    return res.status(400).send('Bad filename');
+  }
+  const filePath = path.join(ATTACHMENTS_DIR, name);
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      const anyErr = err as any;
+      res.status(anyErr?.statusCode || 404).send('Not found');
+    }
+  });
+});
 
 // Inbox
 app.get('/api/inbox', requireToken, (req, res) => {
