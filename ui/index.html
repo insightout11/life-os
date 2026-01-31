@@ -2,240 +2,1606 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
   <title>Life OS</title>
   <style>
-    :root{--bg:#0b1220;--panel:#121a2b;--muted:#9aa4b2;--text:#e8eef7;--accent:#5aa7ff;--border:#22304a;}
-    *{box-sizing:border-box;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;}
-    body{margin:0;background:linear-gradient(180deg,#071022,#0b1220);color:var(--text);}
-    header{position:sticky;top:0;background:rgba(7,16,34,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between;}
-    h1{margin:0;font-size:16px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted)}
-    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .pill{background:rgba(90,167,255,0.12);border:1px solid rgba(90,167,255,0.25);color:var(--accent);padding:6px 10px;border-radius:999px;font-size:12px}
-    .wrap{display:grid;grid-template-columns: 420px 1fr;gap:12px;padding:12px;max-width:1200px;margin:0 auto;}
-    @media (max-width: 900px){.wrap{grid-template-columns:1fr;}}
-    .card{background:rgba(18,26,43,0.9);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-    .card h2{margin:0;padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em}
-    .controls{padding:10px 12px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
-    select,input,button{background:#0e1728;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:8px 10px;font-size:13px;}
-    button{cursor:pointer}
-    button.primary{border-color:rgba(90,167,255,0.45);background:rgba(90,167,255,0.12)}
-    .list{max-height: calc(100vh - 170px); overflow:auto;}
-    .item{padding:12px 14px;border-bottom:1px solid rgba(34,48,74,0.7);cursor:pointer}
-    .item:hover{background:rgba(255,255,255,0.03)}
-    .meta{font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
-    .text{margin-top:6px;font-size:13px;line-height:1.35}
-    .detail{padding:14px}
-    .detail pre{white-space:pre-wrap;word-break:break-word;background:#0e1728;border:1px solid var(--border);padding:10px;border-radius:12px}
-    .kv{display:grid;grid-template-columns:120px 1fr;gap:8px;font-size:13px;margin:8px 0;color:var(--muted)}
-    .kv b{color:var(--text);font-weight:600}
-    .tag{display:inline-flex;gap:6px;align-items:center;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:4px 8px;border-radius:999px;font-size:12px;color:var(--muted)}
-    .ok{color:#6ee7b7}
-    .warn{color:#fbbf24}
-    .err{color:#f87171}
-    .small{font-size:12px;color:var(--muted)}
+    :root {
+      --bg: #0a0e17;
+      --panel: #111827;
+      --panel-raised: #1a2234;
+      --muted: #6b7280;
+      --text: #f3f4f6;
+      --text-dim: #9ca3af;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.15);
+      --border: #1f2937;
+      --border-light: #374151;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --purple: #8b5cf6;
+      --pink: #ec4899;
+      --cyan: #06b6d4;
+      --radius: 12px;
+      --radius-lg: 16px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+      --shadow-lg: 0 8px 40px rgba(0,0,0,0.6);
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(10, 14, 23, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .status-badge.online {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+    .status-badge.offline {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Tab Bar */
+    .tab-bar {
+      position: fixed;
+      top: 53px;
+      left: 0;
+      right: 0;
+      z-index: 99;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .tab-bar::-webkit-scrollbar { display: none; }
+    .tab {
+      flex: 1;
+      min-width: max-content;
+      padding: 14px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-align: center;
+      border: none;
+      background: none;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+      white-space: nowrap;
+    }
+    .tab:hover { color: var(--text-dim); }
+    .tab.active {
+      color: var(--accent);
+    }
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 16px;
+      right: 16px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 2px 2px 0 0;
+    }
+    .tab .count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      margin-left: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--border);
+      border-radius: 10px;
+    }
+    .tab.active .count {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Main Content */
+    .main {
+      padding-top: 105px;
+      padding-bottom: 20px;
+      min-height: 100vh;
+    }
+
+    /* Controls Row */
+    .controls-row {
+      padding: 12px 16px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .control-select {
+      flex: 1;
+      min-width: 100px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236b7280'%3E%3Cpath d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 30px;
+    }
+    .control-select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn:hover {
+      background: var(--panel-raised);
+      border-color: var(--border-light);
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+    .btn-success {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+    .btn-success:hover {
+      background: #059669;
+      border-color: #059669;
+    }
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: var(--danger);
+    }
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+    .btn-lg {
+      padding: 16px 24px;
+      font-size: 15px;
+      border-radius: var(--radius-lg);
+    }
+    .btn-block {
+      width: 100%;
+    }
+    .btn-icon {
+      padding: 10px;
+    }
+
+    /* Item List */
+    .item-list {
+      padding: 0 12px;
+    }
+    .item-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      overflow: hidden;
+    }
+    .item-card:hover {
+      border-color: var(--border-light);
+      background: var(--panel-raised);
+    }
+    .item-card:active {
+      transform: scale(0.995);
+    }
+    .item-content {
+      padding: 14px 16px;
+    }
+    .item-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .item-id {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .item-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-radius: 6px;
+    }
+    .badge-status {
+      background: rgba(107, 114, 128, 0.2);
+      color: var(--muted);
+    }
+    .badge-new {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--accent);
+    }
+    .badge-prefix {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+    }
+    .badge-transcribe {
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--purple);
+    }
+    .badge-attachment {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--cyan);
+    }
+    .item-text {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .item-time {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /* Triage Mode */
+    .triage-container {
+      display: none;
+      padding: 16px;
+      min-height: calc(100vh - 105px);
+      flex-direction: column;
+    }
+    .triage-container.active {
+      display: flex;
+    }
+    .triage-start {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 20px;
+    }
+    .triage-start-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--accent-glow);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+    }
+    .triage-start h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .triage-start p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .triage-active {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .triage-active.show {
+      display: flex;
+    }
+    .triage-progress {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+    }
+    .triage-progress-bar {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .triage-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+    .triage-progress-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .triage-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .triage-card-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .triage-card-text {
+      flex: 1;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-y: auto;
+      max-height: 40vh;
+    }
+    .triage-card-attachments {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .triage-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .triage-actions-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .triage-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .triage-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 16px 12px;
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .triage-btn:hover {
+      border-color: var(--border-light);
+      background: var(--panel-raised);
+    }
+    .triage-btn:active {
+      transform: scale(0.97);
+    }
+    .triage-btn.selected {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+    .triage-btn-icon {
+      font-size: 24px;
+    }
+    .triage-btn-task { border-color: var(--success); }
+    .triage-btn-task:hover, .triage-btn-task.selected { background: rgba(16, 185, 129, 0.15); }
+    .triage-btn-business { border-color: var(--accent); }
+    .triage-btn-business:hover, .triage-btn-business.selected { background: var(--accent-glow); }
+    .triage-btn-content { border-color: var(--purple); }
+    .triage-btn-content:hover, .triage-btn-content.selected { background: rgba(139, 92, 246, 0.15); }
+    .triage-btn-trash { border-color: var(--muted); }
+    .triage-btn-trash:hover, .triage-btn-trash.selected { background: rgba(107, 114, 128, 0.15); }
+
+    /* Chips */
+    .chips-section {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .chips-section.show {
+      display: flex;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chip:hover {
+      border-color: var(--border-light);
+    }
+    .chip.selected {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+    .chip-p1.selected { background: var(--danger); border-color: var(--danger); }
+    .chip-p2.selected { background: var(--warning); border-color: var(--warning); color: #000; }
+    .chip-p3.selected { background: var(--success); border-color: var(--success); }
+    .chip-satire.selected { background: var(--pink); border-color: var(--pink); }
+    .chip-brand.selected { background: var(--purple); border-color: var(--purple); }
+    .chip-teach.selected { background: var(--cyan); border-color: var(--cyan); }
+
+    .triage-save-row {
+      display: none;
+      padding-top: 8px;
+    }
+    .triage-save-row.show {
+      display: block;
+    }
+
+    /* Bottom Sheet */
+    .sheet-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+    .sheet-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .sheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 201;
+      background: var(--panel);
+      border-radius: 20px 20px 0 0;
+      max-height: 90vh;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .sheet.open {
+      transform: translateY(0);
+    }
+    .sheet-handle {
+      width: 36px;
+      height: 4px;
+      background: var(--border-light);
+      border-radius: 2px;
+      margin: 12px auto;
+      flex-shrink: 0;
+    }
+    .sheet-header {
+      padding: 0 20px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .sheet-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .sheet-close {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--border);
+      border: none;
+      border-radius: 50%;
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .sheet-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .sheet-section {
+      margin-bottom: 20px;
+    }
+    .sheet-section:last-child {
+      margin-bottom: 0;
+    }
+    .sheet-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .sheet-text {
+      font-size: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .sheet-kv {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 8px 12px;
+      font-size: 14px;
+    }
+    .sheet-kv dt {
+      color: var(--muted);
+    }
+    .sheet-kv dd {
+      margin: 0;
+      font-weight: 500;
+    }
+    .sheet-attachments {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sheet-attachment {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg);
+      border-radius: var(--radius);
+    }
+    .sheet-attachment-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--panel-raised);
+      border-radius: 10px;
+      font-size: 18px;
+    }
+    .sheet-attachment-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .sheet-attachment-name {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sheet-attachment-meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .sheet-editor {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .sheet-editor-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sheet-editor-label {
+      width: 80px;
+      font-size: 13px;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .sheet-editor-row select,
+    .sheet-editor-row input {
+      flex: 1;
+      padding: 10px 12px;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .sheet-editor-row select:focus,
+    .sheet-editor-row input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .sheet-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .sheet-actions-row {
+      display: flex;
+      gap: 10px;
+    }
+    .sheet-actions-row .btn {
+      flex: 1;
+    }
+
+    /* Empty State */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    .empty-state-text {
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    /* Buckets View */
+    .buckets-container {
+      padding: 12px 16px;
+    }
+    .bucket-group {
+      margin-bottom: 16px;
+    }
+    .bucket-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding: 0 4px;
+    }
+    .bucket-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .bucket-count {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Desktop Layout */
+    @media (min-width: 768px) {
+      .main {
+        display: grid;
+        grid-template-columns: 400px 1fr;
+        gap: 0;
+        padding-top: 105px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      .list-panel {
+        border-right: 1px solid var(--border);
+        height: calc(100vh - 105px);
+        overflow-y: auto;
+      }
+      .detail-panel {
+        height: calc(100vh - 105px);
+        overflow-y: auto;
+        padding: 20px;
+        display: none;
+      }
+      .detail-panel.show {
+        display: block;
+      }
+      .sheet-overlay, .sheet {
+        display: none !important;
+      }
+      .detail-panel .sheet-body {
+        padding: 0;
+      }
+      .triage-container {
+        grid-column: 1 / -1;
+      }
+    }
+
+    /* Utility */
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
-  <header>
-    <div class="row">
-      <h1>Life OS</h1>
-      <span id="status" class="pill">connecting…</span>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <span class="logo">Life OS</span>
+      <span id="status" class="status-badge offline">
+        <span class="status-dot"></span>
+        <span>Offline</span>
+      </span>
     </div>
-    <div class="row small">API: <span id="apiBase"></span></div>
+    <button id="refreshBtn" class="btn btn-icon" title="Refresh">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+    </button>
   </header>
 
-  <div class="wrap">
-    <div class="card">
-      <h2>Inbox</h2>
-      <div class="controls">
-        <select id="viewMode">
-          <option value="inbox" selected>inbox</option>
-          <option value="buckets">buckets</option>
+  <!-- Tab Bar -->
+  <nav class="tab-bar">
+    <button class="tab active" data-tab="triage">Triage<span class="count" id="countTriage">0</span></button>
+    <button class="tab" data-tab="clarify">Clarify<span class="count" id="countClarify">0</span></button>
+    <button class="tab" data-tab="transcribe">Transcribe<span class="count" id="countTranscribe">0</span></button>
+    <button class="tab" data-tab="content">Content Bank</button>
+    <button class="tab" data-tab="all">All</button>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+    <!-- List Panel -->
+    <div class="list-panel" id="listPanel">
+      <div class="controls-row" id="controlsRow">
+        <select class="control-select" id="statusFilter">
+          <option value="">All Status</option>
+          <option value="new">New</option>
+          <option value="triaged">Triaged</option>
+          <option value="processed">Processed</option>
+          <option value="archived">Archived</option>
         </select>
-        <select id="statusFilter">
-          <option value="">all</option>
-          <option value="new" selected>new</option>
-          <option value="triaged">triaged</option>
-          <option value="processed">processed</option>
-          <option value="archived">archived</option>
+        <select class="control-select" id="viewMode">
+          <option value="inbox">List View</option>
+          <option value="buckets">Buckets</option>
         </select>
-        <select id="prefixFilter">
-          <option value="">any prefix</option>
-          <option value="NOW">NOW</option>
-          <option value="URGENT">URGENT</option>
-          <option value="SORT_NOW">SORT_NOW</option>
-        </select>
-        <button class="primary" id="refreshBtn">Refresh</button>
       </div>
-      <div class="list" id="list"></div>
-      <div class="list" id="buckets" style="display:none;padding:12px"></div>
+      <div class="item-list" id="itemList"></div>
+      <div class="buckets-container hidden" id="bucketsContainer"></div>
     </div>
 
-    <div class="card">
-      <h2>Item</h2>
-      <div class="detail" id="detail">
-        <div class="small">Select an item from the left.</div>
+    <!-- Triage Container -->
+    <div class="triage-container" id="triageContainer">
+      <div class="triage-start" id="triageStart">
+        <div class="triage-start-icon">⚡</div>
+        <h2>Triage Mode</h2>
+        <p id="triageQueueInfo">0 items to process</p>
+        <button class="btn btn-primary btn-lg" id="startTriageBtn">Start Triage</button>
+      </div>
+      <div class="triage-active" id="triageActive">
+        <div class="triage-progress">
+          <div class="triage-progress-bar">
+            <div class="triage-progress-fill" id="triageProgressFill" style="width: 0%"></div>
+          </div>
+          <span class="triage-progress-text" id="triageProgressText">0 / 0</span>
+          <button class="btn" id="exitTriageBtn">Exit</button>
+        </div>
+        <div class="triage-card">
+          <div class="triage-card-meta" id="triageCardMeta"></div>
+          <div class="triage-card-text" id="triageCardText"></div>
+          <div class="triage-card-attachments" id="triageCardAttachments"></div>
+        </div>
+        <div class="triage-actions">
+          <div class="triage-actions-label">Classify this item</div>
+          <div class="triage-buttons">
+            <button class="triage-btn triage-btn-task" data-classify="task">
+              <span class="triage-btn-icon">✓</span>
+              <span>Task</span>
+            </button>
+            <button class="triage-btn triage-btn-business" data-classify="business">
+              <span class="triage-btn-icon">💼</span>
+              <span>Business</span>
+            </button>
+            <button class="triage-btn triage-btn-content" data-classify="content">
+              <span class="triage-btn-icon">💡</span>
+              <span>Content Idea</span>
+            </button>
+            <button class="triage-btn triage-btn-trash" data-classify="trash">
+              <span class="triage-btn-icon">🗑</span>
+              <span>Trash</span>
+            </button>
+          </div>
+
+          <!-- Bucket chips (shown after classification) -->
+          <div class="chips-section" id="bucketChips">
+            <div class="triage-actions-label">Bucket</div>
+            <div class="chips" id="bucketChipsList"></div>
+          </div>
+
+          <!-- Priority chips -->
+          <div class="chips-section" id="priorityChips">
+            <div class="triage-actions-label">Priority</div>
+            <div class="chips">
+              <button class="chip chip-p1" data-priority="P1">P1 - Urgent</button>
+              <button class="chip chip-p2" data-priority="P2">P2 - Soon</button>
+              <button class="chip chip-p3" data-priority="P3">P3 - Later</button>
+            </div>
+          </div>
+
+          <!-- Persona chips (for content) -->
+          <div class="chips-section" id="personaChips">
+            <div class="triage-actions-label">Persona Tag</div>
+            <div class="chips">
+              <button class="chip chip-satire" data-persona="satire">#satire</button>
+              <button class="chip chip-brand" data-persona="brand">#brand</button>
+              <button class="chip chip-teach" data-persona="teach">#teach</button>
+            </div>
+          </div>
+
+          <div class="triage-save-row" id="triageSaveRow">
+            <button class="btn btn-success btn-lg btn-block" id="saveNextBtn">Save + Next →</button>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- Detail Panel (Desktop) -->
+    <div class="detail-panel" id="detailPanel">
+      <div class="sheet-body" id="detailContent">
+        <div class="empty-state">
+          <div class="empty-state-icon">📋</div>
+          <p class="empty-state-text">Select an item to view details</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Sheet (Mobile) -->
+  <div class="sheet-overlay" id="sheetOverlay"></div>
+  <div class="sheet" id="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <span class="sheet-title" id="sheetTitle">Item Details</span>
+      <button class="sheet-close" id="sheetClose">×</button>
+    </div>
+    <div class="sheet-body" id="sheetBody"></div>
+    <div class="sheet-actions" id="sheetActions"></div>
   </div>
 
 <script>
   const API_BASE = location.origin;
-  document.getElementById('apiBase').textContent = API_BASE;
 
-  // Simple auth token for API calls (stored locally in the browser)
-  function getToken(){
+  // State
+  let allItems = [];
+  let currentTab = 'triage';
+  let triageQueue = [];
+  let triageIndex = 0;
+  let triageMode = false;
+  let selectedClassification = null;
+  let selectedBucket = null;
+  let selectedPriority = null;
+  let selectedPersona = null;
+  let selectedItemId = null;
+
+  // Auth
+  function getToken() {
     return localStorage.getItem('lifeos_token') || '';
   }
-  function setToken(t){
+  function setToken(t) {
     localStorage.setItem('lifeos_token', t);
   }
-  async function apiFetch(url, opts={}){
+  async function apiFetch(url, opts = {}) {
     const headers = Object.assign({}, opts.headers || {});
     const tok = getToken();
-    if(tok) headers['Authorization'] = `Bearer ${tok}`;
+    if (tok) headers['Authorization'] = `Bearer ${tok}`;
     const res = await fetch(url, Object.assign({}, opts, { headers }));
-    if(res.status === 401){
-      const t = prompt('Life‑OS token required. Paste LIFEOS_UI_TOKEN:');
-      if(t){ setToken(t.trim()); return apiFetch(url, opts); }
+    if (res.status === 401) {
+      const t = prompt('Life-OS token required. Paste LIFEOS_UI_TOKEN:');
+      if (t) { setToken(t.trim()); return apiFetch(url, opts); }
     }
     return res;
   }
 
-  async function health(){
-    try{
+  // Health check
+  async function checkHealth() {
+    const statusEl = document.getElementById('status');
+    try {
       const r = await fetch(`${API_BASE}/health`);
       const j = await r.json();
-      document.getElementById('status').textContent = j.ok ? 'online' : 'offline';
-      document.getElementById('status').className = 'pill ' + (j.ok ? 'ok' : 'err');
-    }catch(e){
-      document.getElementById('status').textContent = 'offline';
-      document.getElementById('status').className = 'pill err';
+      statusEl.className = 'status-badge ' + (j.ok ? 'online' : 'offline');
+      statusEl.innerHTML = `<span class="status-dot"></span><span>${j.ok ? 'Online' : 'Offline'}</span>`;
+    } catch (e) {
+      statusEl.className = 'status-badge offline';
+      statusEl.innerHTML = '<span class="status-dot"></span><span>Offline</span>';
     }
   }
 
-  function escapeHtml(s){
-    return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  // Utils
+  function escapeHtml(s) {
+    return (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  function formatTime(dateStr) {
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now - d;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHrs = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHrs < 24) return `${diffHrs}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return d.toLocaleDateString();
+  }
+  function getAttachmentIcon(type) {
+    const icons = { photo: '🖼', voice: '🎤', audio: '🎵', video: '🎬', document: '📄' };
+    return icons[type] || '📎';
   }
 
-  function fmtItemRow(it){
-    const hasAtt = it.attachments?.length ? ` · ${it.attachments.length} att` : '';
-    const needsT = it.needsTranscription ? ' · needs transcription' : '';
-    const prefix = it.prefix ? ` · ${it.prefix}` : '';
+  // Filter items by tab
+  function filterByTab(items, tab) {
+    switch (tab) {
+      case 'triage':
+        return items.filter(it => it.status === 'new' && !it.needsTranscription);
+      case 'clarify':
+        return items.filter(it => it.status === 'needs_clarification' || it.tags?.includes('clarify'));
+      case 'transcribe':
+        return items.filter(it => it.needsTranscription);
+      case 'content':
+        return items.filter(it => it.primaryBucket?.toLowerCase() === 'content bank' || it.primaryBucket?.toLowerCase() === 'content');
+      case 'all':
+      default:
+        return items;
+    }
+  }
+
+  // Update tab counts
+  function updateTabCounts() {
+    document.getElementById('countTriage').textContent = filterByTab(allItems, 'triage').length;
+    document.getElementById('countClarify').textContent = filterByTab(allItems, 'clarify').length;
+    document.getElementById('countTranscribe').textContent = filterByTab(allItems, 'transcribe').length;
+  }
+
+  // Render item card
+  function renderItemCard(it) {
     const text = it.rawText || it.transcript || '(no text)';
-    const preview = text.length > 120 ? text.slice(0,120)+'…' : text;
+    const preview = text.length > 150 ? text.slice(0, 150) + '…' : text;
+    let badges = '';
+    if (it.status === 'new') badges += '<span class="badge badge-new">New</span>';
+    else badges += `<span class="badge badge-status">${escapeHtml(it.status)}</span>`;
+    if (it.prefix) badges += `<span class="badge badge-prefix">${escapeHtml(it.prefix)}</span>`;
+    if (it.needsTranscription) badges += '<span class="badge badge-transcribe">Transcribe</span>';
+    if (it.attachments?.length) badges += `<span class="badge badge-attachment">${it.attachments.length} file${it.attachments.length > 1 ? 's' : ''}</span>`;
     return `
-      <div class="item" data-id="${it.id}">
-        <div class="meta">#${it.id} · ${escapeHtml(it.status)}${escapeHtml(prefix)}${escapeHtml(hasAtt)}${escapeHtml(needsT)} · ${escapeHtml(it.createdAt)}</div>
-        <div class="text">${escapeHtml(preview)}</div>
+      <div class="item-card" data-id="${it.id}">
+        <div class="item-content">
+          <div class="item-meta">
+            <span class="item-id">#${it.id}</span>
+            <div class="item-badges">${badges}</div>
+          </div>
+          <div class="item-text">${escapeHtml(preview)}</div>
+          <div class="item-time">${formatTime(it.createdAt)}</div>
+        </div>
       </div>
     `;
   }
 
-  async function loadList(){
-    const status = document.getElementById('statusFilter').value;
-    const prefix = document.getElementById('prefixFilter').value;
-    const qs = new URLSearchParams();
-    if(status) qs.set('status', status);
-    if(prefix) qs.set('prefix', prefix);
-    qs.set('limit','200');
+  // Render list
+  function renderList() {
+    const statusFilter = document.getElementById('statusFilter').value;
+    const viewMode = document.getElementById('viewMode').value;
+    const listEl = document.getElementById('itemList');
+    const bucketsEl = document.getElementById('bucketsContainer');
 
-    const r = await apiFetch(`${API_BASE}/api/inbox?${qs.toString()}`);
-    const j = await r.json();
-    const el = document.getElementById('list');
-    el.innerHTML = (j.items||[]).map(fmtItemRow).join('') || `<div class="item"><div class="small">No items.</div></div>`;
-    return (j.items||[]);
+    let items = filterByTab(allItems, currentTab);
+    if (statusFilter) items = items.filter(it => it.status === statusFilter);
+
+    if (viewMode === 'buckets') {
+      listEl.classList.add('hidden');
+      bucketsEl.classList.remove('hidden');
+      renderBuckets(items);
+    } else {
+      listEl.classList.remove('hidden');
+      bucketsEl.classList.add('hidden');
+      if (items.length === 0) {
+        listEl.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p class="empty-state-text">No items found</p></div>';
+      } else {
+        listEl.innerHTML = items.map(renderItemCard).join('');
+      }
+    }
   }
 
-  function bucketKey(it){
-    const p = (it.primaryPipeline || 'untriaged').toLowerCase();
-    const b = (it.primaryBucket || 'inbox').toLowerCase();
-    return `${p} / ${b}`;
-  }
-
-  function renderBuckets(items){
-    const box = document.getElementById('buckets');
+  // Render buckets
+  function renderBuckets(items) {
+    const bucketsEl = document.getElementById('bucketsContainer');
     const groups = new Map();
-    for(const it of items){
-      const k = bucketKey(it);
-      if(!groups.has(k)) groups.set(k, []);
-      groups.get(k).push(it);
+    for (const it of items) {
+      const p = (it.primaryPipeline || 'untriaged').toLowerCase();
+      const b = (it.primaryBucket || 'inbox').toLowerCase();
+      const key = `${p} / ${b}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(it);
     }
     const keys = Array.from(groups.keys()).sort();
-    if(keys.length===0){
-      box.innerHTML = `<div class="small">No items.</div>`;
+    if (keys.length === 0) {
+      bucketsEl.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p class="empty-state-text">No items found</p></div>';
       return;
     }
-    box.innerHTML = keys.map(k=>{
+    bucketsEl.innerHTML = keys.map(k => {
       const arr = groups.get(k);
       return `
-        <div style="margin-bottom:14px">
-          <div class="meta" style="margin-bottom:6px"><b style="color:var(--text)">${escapeHtml(k)}</b> · ${arr.length}</div>
-          <div style="border:1px solid rgba(34,48,74,0.7); border-radius:12px; overflow:hidden">
-            ${arr.map(fmtItemRow).join('')}
+        <div class="bucket-group">
+          <div class="bucket-header">
+            <span class="bucket-name">${escapeHtml(k)}</span>
+            <span class="bucket-count">${arr.length}</span>
           </div>
+          <div class="item-list">${arr.map(renderItemCard).join('')}</div>
         </div>
       `;
     }).join('');
   }
 
-  async function loadItem(id){
-    const r = await apiFetch(`${API_BASE}/api/inbox/${id}`);
-    const j = await r.json();
-    const it = j.item;
-    const attHtml = (it.attachments||[]).map(a => `<div class="tag">${escapeHtml(a.type)} · ${escapeHtml(a.mimeType||'')} · ${escapeHtml((a.fileSize||0)+'b')}</div>`).join(' ');
-    document.getElementById('detail').innerHTML = `
-      <div class="kv"><div>id</div><b>#${it.id}</b></div>
-      <div class="kv"><div>status</div><b>${escapeHtml(it.status)}</b></div>
-      <div class="kv"><div>prefix</div><b>${escapeHtml(it.prefix||'')}</b></div>
-      <div class="kv"><div>created</div><b>${escapeHtml(it.createdAt)}</b></div>
-      <div class="kv"><div>needs tx</div><b>${it.needsTranscription ? 'yes' : 'no'}</b></div>
-      <div style="margin:10px 0">${attHtml || '<span class="small">No attachments</span>'}</div>
-      <div class="small">Text</div>
-      <pre>${escapeHtml(it.rawText || '')}</pre>
-      <div class="small">Transcript</div>
-      <pre>${escapeHtml(it.transcript || '')}</pre>
-    `;
-  }
-
-  async function refreshAll(){
-    const items = await loadList();
-    const mode = document.getElementById('viewMode').value;
-    const listEl = document.getElementById('list');
-    const bucketsEl = document.getElementById('buckets');
-    if(mode === 'buckets'){
-      listEl.style.display = 'none';
-      bucketsEl.style.display = 'block';
-      renderBuckets(items);
-    } else {
-      listEl.style.display = 'block';
-      bucketsEl.style.display = 'none';
+  // Load items from API
+  async function loadItems() {
+    try {
+      const r = await apiFetch(`${API_BASE}/api/inbox?limit=500`);
+      const j = await r.json();
+      allItems = j.items || [];
+      updateTabCounts();
+      renderList();
+      updateTriageQueue();
+    } catch (e) {
+      console.error('Failed to load items:', e);
     }
   }
 
-  document.getElementById('refreshBtn').addEventListener('click', async () => { await refreshAll(); });
-  document.getElementById('statusFilter').addEventListener('change', refreshAll);
-  document.getElementById('prefixFilter').addEventListener('change', refreshAll);
-  document.getElementById('viewMode').addEventListener('change', refreshAll);
+  // Load single item
+  async function loadItem(id) {
+    try {
+      const r = await apiFetch(`${API_BASE}/api/inbox/${id}`);
+      const j = await r.json();
+      return j.item;
+    } catch (e) {
+      console.error('Failed to load item:', e);
+      return null;
+    }
+  }
 
-  document.getElementById('list').addEventListener('click', (e)=>{
-    const item = e.target.closest('.item');
-    if(!item) return;
-    const id = item.getAttribute('data-id');
-    if(id) loadItem(id);
-  });
-  document.getElementById('buckets').addEventListener('click', (e)=>{
-    const item = e.target.closest('.item');
-    if(!item) return;
-    const id = item.getAttribute('data-id');
-    if(id) loadItem(id);
+  // Update item via API
+  async function updateItem(id, data) {
+    try {
+      const r = await apiFetch(`${API_BASE}/api/inbox/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!r.ok) {
+        // TODO: Backend may not support PATCH yet - log for debugging
+        console.warn('PATCH failed, status:', r.status);
+        return false;
+      }
+      return true;
+    } catch (e) {
+      console.error('Failed to update item:', e);
+      return false;
+    }
+  }
+
+  // Show item details
+  async function showItemDetails(id) {
+    selectedItemId = id;
+    const item = await loadItem(id);
+    if (!item) return;
+
+    const content = renderDetailContent(item);
+    const actions = renderDetailActions(item);
+
+    // Desktop
+    document.getElementById('detailContent').innerHTML = content;
+    document.getElementById('detailPanel').classList.add('show');
+
+    // Mobile - bottom sheet
+    document.getElementById('sheetTitle').textContent = `Item #${item.id}`;
+    document.getElementById('sheetBody').innerHTML = content;
+    document.getElementById('sheetActions').innerHTML = actions;
+    document.getElementById('sheetOverlay').classList.add('open');
+    document.getElementById('sheet').classList.add('open');
+  }
+
+  function renderDetailContent(item) {
+    const text = item.rawText || item.transcript || '(no text)';
+    let attachmentsHtml = '';
+    if (item.attachments?.length) {
+      attachmentsHtml = `
+        <div class="sheet-section">
+          <div class="sheet-label">Attachments</div>
+          <div class="sheet-attachments">
+            ${item.attachments.map(a => `
+              <div class="sheet-attachment">
+                <div class="sheet-attachment-icon">${getAttachmentIcon(a.type)}</div>
+                <div class="sheet-attachment-info">
+                  <div class="sheet-attachment-name">${escapeHtml(a.fileName || a.type)}</div>
+                  <div class="sheet-attachment-meta">${escapeHtml(a.mimeType || '')} · ${a.fileSize ? Math.round(a.fileSize / 1024) + ' KB' : ''}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+    return `
+      <div class="sheet-section">
+        <div class="item-badges" style="margin-bottom:12px">
+          ${item.status === 'new' ? '<span class="badge badge-new">New</span>' : `<span class="badge badge-status">${escapeHtml(item.status)}</span>`}
+          ${item.prefix ? `<span class="badge badge-prefix">${escapeHtml(item.prefix)}</span>` : ''}
+          ${item.needsTranscription ? '<span class="badge badge-transcribe">Needs Transcription</span>' : ''}
+        </div>
+        <div class="sheet-text">${escapeHtml(text)}</div>
+      </div>
+      ${attachmentsHtml}
+      <div class="sheet-section">
+        <div class="sheet-label">Details</div>
+        <dl class="sheet-kv">
+          <dt>Created</dt><dd>${formatTime(item.createdAt)}</dd>
+          <dt>Pipeline</dt><dd>${escapeHtml(item.primaryPipeline || '-')}</dd>
+          <dt>Bucket</dt><dd>${escapeHtml(item.primaryBucket || '-')}</dd>
+          <dt>Priority</dt><dd>${escapeHtml(item.priority || '-')}</dd>
+          <dt>Tags</dt><dd>${item.tags?.length ? item.tags.map(t => `<span class="badge badge-status">${escapeHtml(t)}</span>`).join(' ') : '-'}</dd>
+        </dl>
+      </div>
+      <div class="sheet-section">
+        <div class="sheet-label">Edit</div>
+        <div class="sheet-editor">
+          <div class="sheet-editor-row">
+            <span class="sheet-editor-label">Status</span>
+            <select id="editStatus" data-field="status">
+              <option value="new" ${item.status === 'new' ? 'selected' : ''}>New</option>
+              <option value="triaged" ${item.status === 'triaged' ? 'selected' : ''}>Triaged</option>
+              <option value="processed" ${item.status === 'processed' ? 'selected' : ''}>Processed</option>
+              <option value="archived" ${item.status === 'archived' ? 'selected' : ''}>Archived</option>
+            </select>
+          </div>
+          <div class="sheet-editor-row">
+            <span class="sheet-editor-label">Pipeline</span>
+            <select id="editPipeline" data-field="primaryPipeline">
+              <option value="">-</option>
+              <option value="life" ${item.primaryPipeline === 'life' ? 'selected' : ''}>Life</option>
+              <option value="business" ${item.primaryPipeline === 'business' ? 'selected' : ''}>Business</option>
+            </select>
+          </div>
+          <div class="sheet-editor-row">
+            <span class="sheet-editor-label">Bucket</span>
+            <input type="text" id="editBucket" data-field="primaryBucket" value="${escapeHtml(item.primaryBucket || '')}" placeholder="e.g. Ops, Content Bank">
+          </div>
+          <div class="sheet-editor-row">
+            <span class="sheet-editor-label">Priority</span>
+            <select id="editPriority" data-field="priority">
+              <option value="">-</option>
+              <option value="P1" ${item.priority === 'P1' ? 'selected' : ''}>P1 - Urgent</option>
+              <option value="P2" ${item.priority === 'P2' ? 'selected' : ''}>P2 - Soon</option>
+              <option value="P3" ${item.priority === 'P3' ? 'selected' : ''}>P3 - Later</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderDetailActions(item) {
+    return `
+      <div class="sheet-actions-row">
+        <button class="btn btn-primary" onclick="saveItemEdits()">Save Changes</button>
+      </div>
+      <div class="sheet-actions-row">
+        <button class="btn" onclick="markNeedsClarification()">Needs Clarification</button>
+        <button class="btn" onclick="markNeedsTranscription()">Needs Transcription</button>
+      </div>
+      <div class="sheet-actions-row">
+        <button class="btn btn-danger" onclick="archiveItem()">Archive</button>
+      </div>
+    `;
+  }
+
+  // Sheet actions
+  async function saveItemEdits() {
+    if (!selectedItemId) return;
+    const data = {};
+    const statusEl = document.getElementById('editStatus');
+    const pipelineEl = document.getElementById('editPipeline');
+    const bucketEl = document.getElementById('editBucket');
+    const priorityEl = document.getElementById('editPriority');
+    if (statusEl) data.status = statusEl.value;
+    if (pipelineEl) data.primaryPipeline = pipelineEl.value || null;
+    if (bucketEl) data.primaryBucket = bucketEl.value || null;
+    if (priorityEl) data.priority = priorityEl.value || null;
+    await updateItem(selectedItemId, data);
+    closeSheet();
+    await loadItems();
+  }
+
+  async function markNeedsClarification() {
+    if (!selectedItemId) return;
+    const item = allItems.find(it => it.id == selectedItemId);
+    const tags = item?.tags || [];
+    if (!tags.includes('clarify')) tags.push('clarify');
+    await updateItem(selectedItemId, { tags, status: 'needs_clarification' });
+    closeSheet();
+    await loadItems();
+  }
+
+  async function markNeedsTranscription() {
+    if (!selectedItemId) return;
+    await updateItem(selectedItemId, { needsTranscription: true });
+    closeSheet();
+    await loadItems();
+  }
+
+  async function archiveItem() {
+    if (!selectedItemId) return;
+    await updateItem(selectedItemId, { status: 'archived' });
+    closeSheet();
+    await loadItems();
+  }
+
+  function closeSheet() {
+    document.getElementById('sheetOverlay').classList.remove('open');
+    document.getElementById('sheet').classList.remove('open');
+    selectedItemId = null;
+  }
+
+  // Triage mode
+  function updateTriageQueue() {
+    triageQueue = filterByTab(allItems, 'triage');
+    document.getElementById('triageQueueInfo').textContent = `${triageQueue.length} items to process`;
+    if (triageQueue.length === 0 && triageMode) {
+      exitTriageMode();
+    }
+  }
+
+  function startTriageMode() {
+    if (triageQueue.length === 0) return;
+    triageMode = true;
+    triageIndex = 0;
+    document.getElementById('triageStart').style.display = 'none';
+    document.getElementById('triageActive').classList.add('show');
+    document.getElementById('listPanel').classList.add('hidden');
+    showTriageItem();
+  }
+
+  function exitTriageMode() {
+    triageMode = false;
+    document.getElementById('triageStart').style.display = 'flex';
+    document.getElementById('triageActive').classList.remove('show');
+    document.getElementById('listPanel').classList.remove('hidden');
+    resetTriageSelection();
+  }
+
+  function showTriageItem() {
+    if (triageIndex >= triageQueue.length) {
+      exitTriageMode();
+      return;
+    }
+    const item = triageQueue[triageIndex];
+    const progress = ((triageIndex) / triageQueue.length) * 100;
+    document.getElementById('triageProgressFill').style.width = `${progress}%`;
+    document.getElementById('triageProgressText').textContent = `${triageIndex + 1} / ${triageQueue.length}`;
+
+    // Meta badges
+    let badges = `<span class="badge badge-new">New</span>`;
+    if (item.prefix) badges += `<span class="badge badge-prefix">${escapeHtml(item.prefix)}</span>`;
+    if (item.attachments?.length) badges += `<span class="badge badge-attachment">${item.attachments.length} file${item.attachments.length > 1 ? 's' : ''}</span>`;
+    document.getElementById('triageCardMeta').innerHTML = `<span class="item-id">#${item.id}</span>${badges}`;
+
+    // Text
+    const text = item.rawText || item.transcript || '(no text)';
+    document.getElementById('triageCardText').textContent = text;
+
+    // Attachments
+    const attEl = document.getElementById('triageCardAttachments');
+    if (item.attachments?.length) {
+      attEl.innerHTML = item.attachments.map(a => `
+        <span class="badge badge-attachment">${getAttachmentIcon(a.type)} ${escapeHtml(a.fileName || a.type)}</span>
+      `).join(' ');
+      attEl.style.display = 'block';
+    } else {
+      attEl.style.display = 'none';
+    }
+
+    resetTriageSelection();
+  }
+
+  function resetTriageSelection() {
+    selectedClassification = null;
+    selectedBucket = null;
+    selectedPriority = null;
+    selectedPersona = null;
+
+    document.querySelectorAll('.triage-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    document.getElementById('bucketChips').classList.remove('show');
+    document.getElementById('priorityChips').classList.remove('show');
+    document.getElementById('personaChips').classList.remove('show');
+    document.getElementById('triageSaveRow').classList.remove('show');
+  }
+
+  function selectClassification(cls) {
+    selectedClassification = cls;
+    document.querySelectorAll('.triage-btn').forEach(b => {
+      b.classList.toggle('selected', b.dataset.classify === cls);
+    });
+
+    // Show relevant chips
+    const bucketChips = document.getElementById('bucketChips');
+    const priorityChips = document.getElementById('priorityChips');
+    const personaChips = document.getElementById('personaChips');
+    const bucketList = document.getElementById('bucketChipsList');
+
+    // Reset
+    bucketChips.classList.remove('show');
+    priorityChips.classList.remove('show');
+    personaChips.classList.remove('show');
+    selectedBucket = null;
+    selectedPriority = null;
+    selectedPersona = null;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+
+    if (cls === 'task') {
+      bucketList.innerHTML = `
+        <button class="chip" data-bucket="Ops">Ops</button>
+        <button class="chip" data-bucket="Health">Health</button>
+        <button class="chip" data-bucket="Finance">Finance</button>
+        <button class="chip" data-bucket="Social">Social</button>
+      `;
+      bucketChips.classList.add('show');
+      priorityChips.classList.add('show');
+    } else if (cls === 'business') {
+      bucketList.innerHTML = `
+        <button class="chip" data-bucket="Product">Product</button>
+        <button class="chip" data-bucket="Revenue">Revenue</button>
+        <button class="chip" data-bucket="Distribution">Distribution</button>
+        <button class="chip" data-bucket="Admin">Admin</button>
+      `;
+      bucketChips.classList.add('show');
+      priorityChips.classList.add('show');
+    } else if (cls === 'content') {
+      personaChips.classList.add('show');
+      selectedBucket = 'Content Bank';
+    } else if (cls === 'trash') {
+      // No extra options for trash
+    }
+
+    document.getElementById('triageSaveRow').classList.add('show');
+  }
+
+  async function saveAndNext() {
+    if (!selectedClassification || triageIndex >= triageQueue.length) return;
+
+    const item = triageQueue[triageIndex];
+    const data = {};
+
+    if (selectedClassification === 'trash') {
+      data.status = 'archived';
+      data.primaryPipeline = null;
+      data.primaryBucket = 'Trash';
+    } else if (selectedClassification === 'task') {
+      data.status = 'triaged';
+      data.primaryPipeline = 'life';
+      data.primaryBucket = selectedBucket || 'Ops';
+      if (selectedPriority) data.priority = selectedPriority;
+    } else if (selectedClassification === 'business') {
+      data.status = 'triaged';
+      data.primaryPipeline = 'business';
+      data.primaryBucket = selectedBucket || 'Product';
+      if (selectedPriority) data.priority = selectedPriority;
+    } else if (selectedClassification === 'content') {
+      data.status = 'triaged';
+      data.primaryPipeline = 'business';
+      data.primaryBucket = 'Content Bank';
+      const tags = item.tags || [];
+      if (selectedPersona && !tags.includes(selectedPersona)) {
+        tags.push(selectedPersona);
+      }
+      data.tags = tags;
+    }
+
+    await updateItem(item.id, data);
+
+    // Update local state
+    const idx = allItems.findIndex(it => it.id === item.id);
+    if (idx !== -1) {
+      allItems[idx] = { ...allItems[idx], ...data };
+    }
+
+    triageIndex++;
+    updateTabCounts();
+
+    if (triageIndex >= triageQueue.length) {
+      exitTriageMode();
+      await loadItems();
+    } else {
+      showTriageItem();
+    }
+  }
+
+  // Tab switching
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+
+    const triageContainer = document.getElementById('triageContainer');
+    const listPanel = document.getElementById('listPanel');
+    const controlsRow = document.getElementById('controlsRow');
+
+    if (tab === 'triage') {
+      triageContainer.classList.add('active');
+      listPanel.classList.add('hidden');
+      updateTriageQueue();
+      if (!triageMode) {
+        document.getElementById('triageStart').style.display = 'flex';
+        document.getElementById('triageActive').classList.remove('show');
+      }
+    } else {
+      triageContainer.classList.remove('active');
+      listPanel.classList.remove('hidden');
+      if (triageMode) exitTriageMode();
+    }
+
+    // Show/hide status filter based on tab
+    if (tab === 'all') {
+      controlsRow.classList.remove('hidden');
+    } else {
+      controlsRow.classList.add('hidden');
+    }
+
+    renderList();
+  }
+
+  // Event listeners
+  document.getElementById('refreshBtn').addEventListener('click', loadItems);
+  document.getElementById('statusFilter').addEventListener('change', renderList);
+  document.getElementById('viewMode').addEventListener('change', renderList);
+  document.getElementById('startTriageBtn').addEventListener('click', startTriageMode);
+  document.getElementById('exitTriageBtn').addEventListener('click', exitTriageMode);
+  document.getElementById('saveNextBtn').addEventListener('click', saveAndNext);
+  document.getElementById('sheetOverlay').addEventListener('click', closeSheet);
+  document.getElementById('sheetClose').addEventListener('click', closeSheet);
+
+  // Tab clicks
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
   });
 
-  (async ()=>{
-    await health();
-    await refreshAll();
-    setInterval(health, 15000);
+  // Triage classification buttons
+  document.querySelectorAll('.triage-btn').forEach(btn => {
+    btn.addEventListener('click', () => selectClassification(btn.dataset.classify));
+  });
+
+  // Bucket chip clicks (delegated)
+  document.getElementById('bucketChipsList').addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    document.querySelectorAll('#bucketChipsList .chip').forEach(c => c.classList.remove('selected'));
+    chip.classList.add('selected');
+    selectedBucket = chip.dataset.bucket;
+  });
+
+  // Priority chip clicks
+  document.querySelectorAll('[data-priority]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('[data-priority]').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      selectedPriority = chip.dataset.priority;
+    });
+  });
+
+  // Persona chip clicks
+  document.querySelectorAll('[data-persona]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('[data-persona]').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      selectedPersona = chip.dataset.persona;
+    });
+  });
+
+  // Item clicks (delegated)
+  document.addEventListener('click', (e) => {
+    const itemCard = e.target.closest('.item-card');
+    if (!itemCard) return;
+    const id = itemCard.dataset.id;
+    if (id) showItemDetails(id);
+  });
+
+  // Initialize
+  (async () => {
+    await checkHealth();
+    await loadItems();
+    setInterval(checkHealth, 15000);
   })();
 </script>
 </body>
