@@ -5,6 +5,10 @@ import cors from 'cors';
 import path from 'path';
 import { listInboxItems, getInboxItemById, updateInboxItem, triageInboxItem } from './db/inbox';
 import { ATTACHMENTS_DIR } from './db';
+import { initializeSchema } from './db/schema';
+
+// Initialize database schema (includes migrations)
+initializeSchema();
 
 const app = express();
 app.use(cors());
@@ -70,6 +74,14 @@ app.get('/api/inbox/:id', requireToken, (req, res) => {
 });
 
 app.post('/api/inbox/:id/update', requireToken, (req, res) => {
+  const id = parseInt(String(req.params.id), 10);
+  const item = updateInboxItem(id, req.body || {});
+  if (!item) return res.status(404).json({ error: 'Not found' });
+  res.json({ item });
+});
+
+// PATCH endpoint - same as update, but UI prefers this
+app.patch('/api/inbox/:id', requireToken, (req, res) => {
   const id = parseInt(String(req.params.id), 10);
   const item = updateInboxItem(id, req.body || {});
   if (!item) return res.status(404).json({ error: 'Not found' });

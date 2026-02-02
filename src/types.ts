@@ -1,8 +1,12 @@
 export type MessagePrefix = 'NOW' | 'URGENT' | 'SORT_NOW' | null;
 
-export type ItemStatus = 'new' | 'triaged' | 'processed' | 'archived';
+export type ItemStatus = 'new' | 'triaged' | 'processed' | 'archived' | 'needs_clarification';
 
 export type Source = 'telegram';
+
+export type ActionOwner = 'matt' | 'max' | 'either' | null;
+
+export type ActionState = 'waiting' | 'doing' | 'done' | null;
 
 export interface Attachment {
   id: string;
@@ -32,6 +36,11 @@ export interface InboxItem {
   dueDate: string | null;
   nextAction: string | null;
   why: string | null;
+  // Pipeline fields
+  actionOwner: ActionOwner;
+  actionState: ActionState;
+  notes: string | null;
+  doneAt: string | null;
 }
 
 export interface CreateInboxItemInput {
@@ -51,10 +60,27 @@ export interface TriageInput {
   dueDate?: string;
   nextAction?: string;
   why?: string;
+  actionOwner?: ActionOwner;
+  actionState?: ActionState;
+  notes?: string;
+  doneAt?: string;
 }
 
 export interface UpdateInput {
   status?: ItemStatus;
   transcript?: string;
   needsTranscription?: boolean;
+  // Allow updating triage fields via update endpoint
+  summary?: string;
+  primaryPipeline?: string;
+  primaryBucket?: string;
+  tags?: string[];
+  priority?: string;
+  dueDate?: string;
+  nextAction?: string;
+  why?: string;
+  actionOwner?: ActionOwner;
+  actionState?: ActionState;
+  notes?: string;
+  doneAt?: string;
 }

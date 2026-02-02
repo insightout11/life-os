@@ -5,6 +5,8 @@ import type {
   TriageInput,
   UpdateInput,
   ItemStatus,
+  ActionOwner,
+  ActionState,
 } from '../types';
 
 interface DbRow {
@@ -25,6 +27,10 @@ interface DbRow {
   due_date: string | null;
   next_action: string | null;
   why: string | null;
+  action_owner: string | null;
+  action_state: string | null;
+  notes: string | null;
+  done_at: string | null;
 }
 
 function rowToInboxItem(row: DbRow): InboxItem {
@@ -46,6 +52,10 @@ function rowToInboxItem(row: DbRow): InboxItem {
     dueDate: row.due_date,
     nextAction: row.next_action,
     why: row.why,
+    actionOwner: row.action_owner as ActionOwner,
+    actionState: row.action_state as ActionState,
+    notes: row.notes,
+    doneAt: row.done_at,
   };
 }
 
@@ -104,7 +114,7 @@ export function listInboxItems(options: {
 
 export function triageInboxItem(id: number, input: TriageInput): InboxItem | null {
   const updates: string[] = [];
-  const params: (string | number)[] = [];
+  const params: (string | number | null)[] = [];
 
   if (input.summary !== undefined) {
     updates.push('summary = ?');
@@ -138,6 +148,22 @@ export function triageInboxItem(id: number, input: TriageInput): InboxItem | nul
     updates.push('why = ?');
     params.push(input.why);
   }
+  if (input.actionOwner !== undefined) {
+    updates.push('action_owner = ?');
+    params.push(input.actionOwner);
+  }
+  if (input.actionState !== undefined) {
+    updates.push('action_state = ?');
+    params.push(input.actionState);
+  }
+  if (input.notes !== undefined) {
+    updates.push('notes = ?');
+    params.push(input.notes);
+  }
+  if (input.doneAt !== undefined) {
+    updates.push('done_at = ?');
+    params.push(input.doneAt);
+  }
 
   if (updates.length === 0) {
     return getInboxItemById(id);
@@ -152,7 +178,7 @@ export function triageInboxItem(id: number, input: TriageInput): InboxItem | nul
 
 export function updateInboxItem(id: number, input: UpdateInput): InboxItem | null {
   const updates: string[] = [];
-  const params: (string | number)[] = [];
+  const params: (string | number | null)[] = [];
 
   if (input.status !== undefined) {
     updates.push('status = ?');
@@ -165,6 +191,54 @@ export function updateInboxItem(id: number, input: UpdateInput): InboxItem | nul
   if (input.needsTranscription !== undefined) {
     updates.push('needs_transcription = ?');
     params.push(input.needsTranscription ? 1 : 0);
+  }
+  if (input.summary !== undefined) {
+    updates.push('summary = ?');
+    params.push(input.summary);
+  }
+  if (input.primaryPipeline !== undefined) {
+    updates.push('primary_pipeline = ?');
+    params.push(input.primaryPipeline);
+  }
+  if (input.primaryBucket !== undefined) {
+    updates.push('primary_bucket = ?');
+    params.push(input.primaryBucket);
+  }
+  if (input.tags !== undefined) {
+    updates.push('tags = ?');
+    params.push(JSON.stringify(input.tags));
+  }
+  if (input.priority !== undefined) {
+    updates.push('priority = ?');
+    params.push(input.priority);
+  }
+  if (input.dueDate !== undefined) {
+    updates.push('due_date = ?');
+    params.push(input.dueDate);
+  }
+  if (input.nextAction !== undefined) {
+    updates.push('next_action = ?');
+    params.push(input.nextAction);
+  }
+  if (input.why !== undefined) {
+    updates.push('why = ?');
+    params.push(input.why);
+  }
+  if (input.actionOwner !== undefined) {
+    updates.push('action_owner = ?');
+    params.push(input.actionOwner);
+  }
+  if (input.actionState !== undefined) {
+    updates.push('action_state = ?');
+    params.push(input.actionState);
+  }
+  if (input.notes !== undefined) {
+    updates.push('notes = ?');
+    params.push(input.notes);
+  }
+  if (input.doneAt !== undefined) {
+    updates.push('done_at = ?');
+    params.push(input.doneAt);
   }
 
   if (updates.length === 0) {

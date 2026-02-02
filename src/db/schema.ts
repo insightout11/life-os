@@ -20,9 +20,31 @@ export function initializeSchema(): void {
       priority TEXT,
       due_date TEXT,
       next_action TEXT,
-      why TEXT
+      why TEXT,
+      -- Pipeline fields (added in upgrade)
+      action_owner TEXT,
+      action_state TEXT,
+      notes TEXT,
+      done_at TEXT
     )
   `);
+
+  // Migration: add new columns if they don't exist (for existing databases)
+  const columns = db.prepare("PRAGMA table_info(inbox_items)").all() as { name: string }[];
+  const columnNames = columns.map(c => c.name);
+
+  if (!columnNames.includes('action_owner')) {
+    db.exec('ALTER TABLE inbox_items ADD COLUMN action_owner TEXT');
+  }
+  if (!columnNames.includes('action_state')) {
+    db.exec('ALTER TABLE inbox_items ADD COLUMN action_state TEXT');
+  }
+  if (!columnNames.includes('notes')) {
+    db.exec('ALTER TABLE inbox_items ADD COLUMN notes TEXT');
+  }
+  if (!columnNames.includes('done_at')) {
+    db.exec('ALTER TABLE inbox_items ADD COLUMN done_at TEXT');
+  }
 
   // Create index on status for efficient filtering
   db.exec(`
